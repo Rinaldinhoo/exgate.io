@@ -7,7 +7,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-		<title>Coinnexc - Trade</title>
+		<title>Exgate.IO - Trade</title>
 
 		<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 

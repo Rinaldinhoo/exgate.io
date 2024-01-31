@@ -6,10 +6,7 @@
         <div class="d-flex flex-column h-100">
             <!-- Logo -->
             <a href="index.html" class="mb-0 brand-icon">
-                <span class="logo-icon">
-                    <i class="fa fa-gg-circle fs-3"></i>
-                </span>
-                <span class="logo-text">Coinnexc</span>
+                <img src="{{ asset('exgate.png') }}" width="50px" />
             </a>
             <!-- Menu: main ul -->
             <ul class="menu-list flex-grow-1 mt-4 px-1">
