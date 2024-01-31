@@ -9,8 +9,7 @@
             <div class="row align-items-center">
                 <div class="col">
                     <a href="../index.html" class="d-flex align-item-center">
-                        <i class="fa fa-gg-circle fs-3"></i>
-                        <h5 class="mb-0 mt-1 mx-2">Coinnexc</h5>
+                        <img src="{{ asset('exgate.png') }}" width="50px" />
                     </a>
                 </div>
                 <div class="col-auto">
