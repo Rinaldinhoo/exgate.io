@@ -20,6 +20,7 @@ $(function() {
         var dataSell = document.querySelector('[data-sell]').getAttribute('data-sell');
         var dataBuy = document.querySelector('[data-buy]').getAttribute('data-buy');
         var dataAmount = document.querySelector('[data-amount]').getAttribute('data-amount');
+        var dataUsd = document.querySelector('[data-usd]').getAttribute('data-usd');
 
         console.log(dataBuy)
 
@@ -36,9 +37,9 @@ $(function() {
               horizontalAlign: 'center',
               show: true,
           },
-          colors: ['var(--chart-color1)', 'var(--chart-color2)', 'var(--chart-color3)'],
-          series: [parseFloat(dataSell), parseFloat(dataBuy), parseFloat(dataAmount)],
-          labels: ['VENDA','COMPRA', 'USDT'], 
+          colors: ['var(--chart-color1)', '#f2e474', 'var(--chart-color3)'],
+          series: [parseFloat(dataAmount), parseFloat(0), parseFloat(dataUsd)],
+          labels: ['BITCOIN','OUTROS', 'USDT'], 
           responsive: [{
               breakpoint: 480,
               options: {

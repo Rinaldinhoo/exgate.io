@@ -6,29 +6,49 @@
     <div class="sidebar py-2 py-md-2 me-0 border-end">
         <div class="d-flex flex-column h-100">
             <!-- Logo -->
-            <a href="index.html" class="mb-0 brand-icon">
-                <img src="{{ asset('exgate.png') }}" width="50px" />
+            <a href="/welcome" wire:ignore class="mb-0 brand-icon">
+                <img src="{{$this->config->logomarca}}" width="150px" />
             </a>
             <!-- Menu: main ul -->
             <ul class="menu-list flex-grow-1 mt-4 px-1">
-                <li>
-                    <a class="m-link active" href="{{route('welcome')}}">
+            <li>
+                    <a class="m-link active" href="https://app.exgate.io/welcome">
                         <i class="icofont-home fs-3"></i> 
-                        <div class="ms-2"><h6 class="mb-0">Painel</h6><small class="text-muted">Relatório analítico</small></div>
+                        <div class="ms-2"><h6 class="mb-0">Painel</h6><small class="text-muted">Relatório Analítico</small></div>
                     </a>
                 </li>
 
                 <li>
-                    <a class="m-link" href="{{route('trade')}}">
+                    <!-- <a class="m-link" href="https://app.exgate.io/trade"> -->
+                    <a class="m-link" href="https://app.exgate.io/trade">
                         <i class="icofont-chart-arrows-axis fs-4"></i> 
-                        <div class="ms-2" ><h6 class="mb-0">Trade</h6><small class="text-muted">Negociações</small></div>
+                        <div class="ms-2" ><h6 class="mb-0">Futuros</h6><small class="text-muted">Negociações</small></div>
                     </a>
                 </li>
 
                 <li>
-                    <a class="m-link" href="{{route('wallet')}}">
+                    <a class="m-link" href="https://app.exgate.io/exchange">
+                        <i class="icofont-chart-arrows-axis fs-4"></i> 
+                        <div class="ms-2" ><h6 class="mb-0">Exchange</h6><small class="text-muted">Mercado Spot</small></div>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="m-link" href="https://app.exgate.io/trocas">
+                        <i class="icofont-chart-arrows-axis fs-4"></i> 
+                        <div class="ms-2" ><h6 class="mb-0">Transacionar</h6><small class="text-muted">Spot USDT/BRL</small></div>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="m-link" href="https://app.exgate.io/wallet">
                         <i class="icofont-wallet fs-3"></i> 
-                        <div class="ms-2" ><h6 class="mb-0">Carteira</h6><small class="text-muted">Seu saldo</small></div>
+                        <div class="ms-2" ><h6 class="mb-0">Carteira</h6>
+                        <small class="text-muted">Seu saldo</small></br>
+                        <small class="text-muted">Retirada</small></br>
+                        <small class="text-muted">Depósito</small></br>
+                        <small class="text-muted">Transferência interna (P2P)</small>
+                    </div>
                     </a>
                 </li>
 
@@ -52,91 +72,11 @@
                     <!-- header rightbar icon -->
                     <div class="h-right d-flex align-items-center mr-5 mr-lg-0 order-1">
                         <div class="d-flex">
-                            <a class="nav-link text-primary collapsed" href="{{route('wallet')}}" title="Wallet">
+                            <a class="nav-link text-primary collapsed" href="https://app.exgate.io/wallet" title="Wallet">
                                 <i class="icofont-wallet fs-3"></i> 
                             </a>
                         </div>
-                        <div class="dropdown notifications zindex-popover">
-                            <a class="nav-link dropdown-toggle pulse" href="#" role="button" data-bs-toggle="dropdown">
-                                <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="25px" height="25px" viewBox="0 0 38 38">
-                                    <path  d="M36,34v-2h-2.98c-0.598-0.363-1.081-3.663-1.4-5.847c-0.588-4.075-1.415-9.798-4.146-13.723  C26.584,12.154,25.599,12,24.5,12c-3.646,0-5.576,1.657-7.106,4.086C15.089,19.746,14,30.126,14,33c0,2.757,2.243,5,5,5  c2.414,0,4.435-1.721,4.898-4H36z" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></path>
-                                    <path class="st0" d="M33.02,32c-0.598-0.363-1.081-3.663-1.4-5.847c-0.851-5.899-2.199-15.254-9.101-17.604  C23.433,7.643,24,6.386,24,5c0-2.757-2.243-5-5-5s-5,2.243-5,5c0,1.386,0.567,2.643,1.482,3.549  c-6.902,2.35-8.25,11.705-9.101,17.604C6.209,27.324,5.991,28.813,5.733,30h2.042c0.192-0.961,0.376-2.127,0.586-3.562  C9.36,19.501,10.73,10,19,10c8.27,0,9.64,9.501,10.641,16.442c0.386,2.636,0.682,4.394,1.108,5.558H2v2h12.101  c0.464,2.279,2.485,4,4.899,4c2.415,0,4.435-1.721,4.899-4H36v-2H33.02z M19,8c-1.654,0-3-1.346-3-3s1.346-3,3-3s3,1.346,3,3  S20.654,8,19,8z M19,36c-1.304,0-2.416-0.836-2.829-2h5.658C21.416,35.164,20.304,36,19,36z" ></path>
-                                </svg>
-                                <span class="pulse-ring"></span>
-                            </a>
-                            <div id="NotificationsDiv" class="dropdown-menu rounded-lg shadow border-0 dropdown-animation dropdown-menu-md-end p-0 m-0">
-                                <div class="card border-0 w380">
-                                    <div class="card-header border-0 p-3">
-                                        <h5 class="mb-0 font-weight-light d-flex justify-content-between">
-                                            <span>Notifications</span>
-                                            <span class="badge text-white">06</span>
-                                        </h5>
-                                    </div>
-                                    <div class="tab-content card-body">
-                                        <div class="tab-pane fade show active">
-                                            <ul class="list-unstyled list mb-0">
-                                                <li class="py-2 mb-1 border-bottom">
-                                                    <a href="javascript:void(0);" class="d-flex">
-                                                        <img class="avatar rounded-circle" src="{{ asset('template/Html/dist/assets/images/xs/avatar1.svg')}}" alt="">
-                                                        <div class="flex-fill ms-2">
-                                                            <p class="d-flex justify-content-between mb-0 "><span class="font-weight-bold">Chloe Walkerr</span> <small>2MIN</small></p>
-                                                            <span class="">Added New Ico Coin 2021-08-25 <span class="badge bg-success">Add</span></span>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="py-2 mb-1 border-bottom">
-                                                    <a href="javascript:void(0);" class="d-flex">
-                                                        <div class="avatar rounded-circle no-thumbnail">AH</div>
-                                                        <div class="flex-fill ms-2">
-                                                            <p class="d-flex justify-content-between mb-0 "><span class="font-weight-bold">Alan	Hill</span> <small>13MIN</small></p>
-                                                            <span class="">Invoice generator </span>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="py-2 mb-1 border-bottom">
-                                                    <a href="javascript:void(0);" class="d-flex">
-                                                        <img class="avatar rounded-circle" src="{{ asset('template/Html/dist/assets/images/xs/avatar3.svg')}}" alt="">
-                                                        <div class="flex-fill ms-2">
-                                                            <p class="d-flex justify-content-between mb-0 "><span class="font-weight-bold">Melanie	Oliver</span> <small>1HR</small></p>
-                                                            <span class="">User  Document Verified</span>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="py-2 mb-1 border-bottom">
-                                                    <a href="javascript:void(0);" class="d-flex">
-                                                        <img class="avatar rounded-circle" src="{{ asset('template/Html/dist/assets/images/xs/avatar5.svg')}}" alt="">
-                                                        <div class="flex-fill ms-2">
-                                                            <p class="d-flex justify-content-between mb-0 "><span class="font-weight-bold">Boris Hart</span> <small>13MIN</small></p>
-                                                            <span class="">New Coin Listing</span>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="py-2 mb-1 border-bottom">
-                                                    <a href="javascript:void(0);" class="d-flex">
-                                                        <img class="avatar rounded-circle" src="{{ asset('template/Html/dist/assets/images/xs/avatar6.svg')}}" alt="">
-                                                        <div class="flex-fill ms-2">
-                                                            <p class="d-flex justify-content-between mb-0 "><span class="font-weight-bold">Alan	Lambert</span> <small>1HR</small></p>
-                                                            <span class="">15 More Customer Supprot</span>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="py-2">
-                                                    <a href="javascript:void(0);" class="d-flex">
-                                                        <img class="avatar rounded-circle" src="{{ asset('template/Html/dist/assets/images/xs/avatar7.svg')}}" alt="">
-                                                        <div class="flex-fill ms-2">
-                                                            <p class="d-flex justify-content-between mb-0 "><span class="font-weight-bold">Zoe Wright</span> <small class="">1DAY</small></p>
-                                                            <span class="">Coin List Entry Updated</span>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <a class="card-footer text-center border-top-0" href="#"> Ver todas as notificações</a>
-                                </div>
-                            </div>
-                        </div>
-
+                        
                         <div class="dropdown user-profile ml-2 ml-sm-3 d-flex align-items-center zindex-popover">
                             <a class="nav-link dropdown-toggle pulse p-0" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static">
                                 <img class="avatar lg rounded-circle img-thumbnail" src="{{ asset('template/Html/dist/assets/images/profile_av.svg')}}" alt="profile">
@@ -152,7 +92,7 @@
                                             <img class="avatar rounded-circle" src="{{ asset('template/Html/dist/assets/images/profile_av.svg')}}" alt="profile">
                                             <div class="flex-fill ms-3">
                                                 <p class="mb-0"><span class="font-weight-bold">{{$user->name}}</span></p>
-                                                <small class="">{{$user->email}}</small>
+                                                <small class="">{{$person->email_obfuscated}}</small>
                                             </div>
                                         </div>
                                         
@@ -160,14 +100,14 @@
                                     </div>
                                     <div class="list-group m-2 ">
 
-                                        <a href="{{route('profile')}}" class="list-group-item list-group-item-action border-0">
+                                        <a href="https://app.exgate.io/profile" class="list-group-item list-group-item-action border-0">
                                             <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 38 38" class="me-3">
                                                 <path xmlns="http://www.w3.org/2000/svg"   d="M36.15,38H1.85l0.16-1.14c0.92-6.471,3.33-7.46,6.65-8.83c0.43-0.17,0.87-0.36,1.34-0.561  c0.19-0.08,0.38-0.17,0.58-0.26c1.32-0.61,2.14-1.05,2.64-1.45c0.18,0.48,0.47,1.13,0.93,1.78C15.03,28.78,16.53,30,19,30  c2.47,0,3.97-1.22,4.85-2.46c0.46-0.65,0.75-1.3,0.931-1.78c0.5,0.4,1.319,0.84,2.64,1.45c0.2,0.09,0.39,0.17,0.58,0.26  c0.47,0.2,0.91,0.391,1.34,0.561c3.32,1.37,5.73,2.359,6.65,8.83L36.15,38z M20,13v4h-2v-4H20z" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></path>
                                                 <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M21.67,17.34C21.22,18.27,20.29,19,19,19s-2.22-0.73-2.67-1.66l-1.79,0.891C15.31,19.78,16.88,21,19,21  s3.69-1.22,4.46-2.77L21.67,17.34z M15,10.85c-0.61,0-1.1,0.38-1.1,1.65s0.49,1.65,1.1,1.65s1.1-0.38,1.1-1.65S15.61,10.85,15,10.85  z M23,10.85c-0.61,0-1.1,0.38-1.1,1.65s0.489,1.65,1.1,1.65s1.1-0.38,1.1-1.65S23.61,10.85,23,10.85z M35.99,36.86  c-0.92-6.471-3.33-7.46-6.65-8.83c-0.43-0.17-0.87-0.36-1.34-0.561c-0.19-0.09-0.38-0.17-0.58-0.26c-1.32-0.61-2.14-1.05-2.64-1.45  c-0.521-0.42-0.7-0.8-0.761-1.29C26.55,22.74,28,19.8,28,17V4.56l-1.18,0.21C26.1,4.91,25.58,5,25.05,5  c-1.439,0-2.37-0.24-3.35-0.49C20.71,4.26,19.68,4,18.21,4c-1.54,0-2.94,0.69-3.83,1.9l1.61,1.18C16.5,6.39,17.31,6,18.21,6  c1.22,0,2.08,0.22,3,0.45C22.22,6.71,23.36,7,25.05,7c0.32,0,0.63-0.02,0.95-0.06V17c0,3.44-2.62,7-7,7s-7-3.56-7-7V6.29  C12.23,5.59,13.61,2,18.21,2c1.61,0,2.76,0.28,3.88,0.55C23.06,2.78,23.98,3,25.05,3C26.12,3,27.19,2.74,28,2.47V0.34  C27.34,0.61,26.17,1,25.05,1c-0.83,0-1.6-0.18-2.49-0.4C21.38,0.32,20.05,0,18.21,0c-5.24,0-7.64,3.86-8.18,5.89L10,17  c0,2.8,1.45,5.74,3.98,7.47c-0.06,0.49-0.24,0.87-0.76,1.29c-0.5,0.4-1.32,0.84-2.64,1.45c-0.2,0.09-0.39,0.18-0.58,0.26  c-0.47,0.2-0.91,0.391-1.34,0.561c-3.32,1.37-5.73,2.359-6.65,8.83L1.85,38h34.3L35.99,36.86z M4.18,36c0.81-4.3,2.28-4.9,5.24-6.12  c0.62-0.25,1.29-0.53,2-0.86c1.09-0.5,2.01-0.949,2.73-1.479c0.8-0.56,1.36-1.22,1.64-2.12C16.76,25.78,17.83,26,19,26  s2.24-0.22,3.21-0.58c0.28,0.9,0.84,1.561,1.64,2.12c0.721,0.53,1.641,0.979,2.73,1.479c0.71,0.33,1.38,0.61,2,0.86  c2.96,1.22,4.43,1.83,5.24,6.12H4.18z"></path>
                                             </svg>Pagina de perfil
                                         </a>
 
-                                        <a href="{{route('security')}}" class="list-group-item list-group-item-action border-0 ">
+                                        <a href="https://app.exgate.io/security" class="list-group-item list-group-item-action border-0 ">
                                             <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 32 32" class="me-3">
                                                 <path xmlns="http://www.w3.org/2000/svg"  d="M15.5,27.482C5.677,24.8,4.625,10.371,4.513,7.497C11.326,7.402,14.5,5.443,15.5,4.661  c0.999,0.782,4.174,2.742,10.986,2.836C26.375,10.371,25.323,24.8,15.5,27.482z" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></path>
                                                 <path xmlns="http://www.w3.org/2000/svg" class="st2" d="M14.13,21.5c-0.801,0-1.553-0.311-2.116-0.873c-0.57-0.57-0.883-1.327-0.881-2.132  c0.001-0.8,0.314-1.55,0.879-2.11c0.555-0.563,1.297-0.876,2.093-0.885c0.131-0.001,0.256-0.054,0.348-0.146l4.63-4.63  c0.388-0.38,0.879-0.583,1.416-0.583s1.028,0.203,1.42,0.587c0.373,0.373,0.58,0.875,0.58,1.413c0,0.531-0.207,1.03-0.584,1.406  l-4.64,4.641c-0.094,0.095-0.146,0.222-0.146,0.354c0,0.782-0.311,1.522-0.873,2.087C15.693,21.189,14.938,21.5,14.13,21.5z" ></path>
@@ -175,7 +115,7 @@
                                             </svg>Segurança
                                         </a>
 
-                                        <a href="{{route('identification')}}" class="list-group-item list-group-item-action border-0 ">
+                                        <a href="https://app.exgate.io/identification" class="list-group-item list-group-item-action border-0 ">
                                             <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" class="me-3">
                                                 <path xmlns="http://www.w3.org/2000/svg" d="M4,12c0-4.418,3.582-8,8-8s8,3.582,8,8s-3.582,8-8,8S4,16.418,4,12z" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></path>
                                                 <path xmlns="http://www.w3.org/2000/svg" style="opacity:0.7;" d="M12,17.25c-1.689,0-3.265-0.909-4.113-2.372l1.298-0.752C9.766,15.128,10.844,15.75,12,15.75  c1.162,0,2.244-0.628,2.823-1.639l1.301,0.746C15.279,16.333,13.699,17.25,12,17.25z M8.5,12c0.552,0,1-0.672,1-1.5S9.052,9,8.5,9  s-1,0.672-1,1.5S7.948,12,8.5,12z M15.5,12c0.552,0,1-0.672,1-1.5S16.052,9,15.5,9c-0.552,0-1,0.672-1,1.5S14.948,12,15.5,12z"></path>
@@ -183,14 +123,14 @@
                                             </svg>Identificação
                                         </a>
 
-                                        <a href="{{route('coupons')}}" class="list-group-item list-group-item-action border-0 ">
+                                        <a href="https://app.exgate.io/coupons" class="list-group-item list-group-item-action border-0 ">
                                             <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 38 38" class="me-3">
                                                 <rect xmlns="http://www.w3.org/2000/svg"  x="6" y="10"  width="26" height="18" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></rect>
                                                 <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M12,18H8v2h4V18z M20,26h-2v-2.056c-1.14-0.138-1.996-0.532-2.703-1.231l1.406-1.422  C17.212,21.795,17.878,22,19,22c0.02,0,2-0.012,2-1c0-0.438-0.143-0.649-0.545-0.809C19.968,19.999,19.329,20,19,20  c-0.421,0.007-1.349,0.001-2.19-0.332C15.643,19.207,15,18.26,15,17c0-1.723,1.388-2.654,3-2.919V12h2v2.056  c1.14,0.137,1.996,0.532,2.703,1.231l-1.406,1.422C20.787,16.206,20.122,16,19,16c-0.02,0-2,0.011-2,1  c0,0.438,0.143,0.649,0.545,0.809C18.032,18.001,18.688,18.002,19,18c0.44,0.012,1.349,0,2.19,0.332C22.357,18.793,23,19.74,23,21  c0,1.723-1.388,2.654-3,2.92V26z M12,30h6v2h-6V30z M20,30h6v2h-6V30z M28,30h6v2h-6V30z M4,30h6v2H4V30z M12,6h6v2h-6V6z M20,6h6v2  h-6V6z M28,6h6v2h-6V6z M4,6h6v2H4V6z M2,22v-6h2v6H2z M2,14V8h2v6H2z M2,30v-6h2v6H2z M34,22v-6h2v6H34z M34,14V8h2v6H34z M34,30  v-6h2v6H34z"></path>
-                                            </svg>Recompensas
+                                            </svg>Indique e Ganhe
                                         </a>
 
-                                        <a href="{{route('logOff')}}" class="list-group-item list-group-item-action border-0 ">
+                                        <a href="https://app.exgate.io/logoff" class="list-group-item list-group-item-action border-0 ">
                                             <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" class="me-3">
                                             <rect xmlns="http://www.w3.org/2000/svg" class="st0" width="24" height="24" style="fill:none;;" fill="none"></rect>
                                             <path xmlns="http://www.w3.org/2000/svg"  d="M20,4c0-1.104-0.896-2-2-2H6C4.896,2,4,2.896,4,4v16c0,1.104,0.896,2,2,2h12  c1.104,0,2-0.896,2-2V4z" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></path>
@@ -224,23 +164,6 @@
                                 <path style="fill:var(--chart-color1)" d="M2 10h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1zm9-9h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm0 9a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-3zm0-10a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2h-3zM2 9a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H2zm7 2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2v-3zM0 2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm5.354.854a.5.5 0 1 0-.708-.708L3 3.793l-.646-.647a.5.5 0 1 0-.708.708l1 1a.5.5 0 0 0 .708 0l2-2z"/>
                             </svg>
                         </a>
-                        <div class="main-search border-start px-3 flex-fill">
-                            <input class="form-control" type="text" placeholder="Digite sua palavra-chave de pesquisa">
-                            <div class="card border-0 shadow rounded-3 search-result slidedown">
-                                <div class="card-body text-start">
-            
-                                    <small class="dropdown-header">Pesquisas recentes</small>
-                                    <div class="dropdown-item bg-transparent text-wrap my-2">
-                                        <a class="badge bg-primary" href="#">Pixelwibes <i class="fa fa-search ms-1"></i></a>
-                                        <a class="badge bg-primary" href="#">Theme <i class="fa fa-search ms-1"></i></a>
-                                        <a class="badge bg-primary" href="#">Color Full <i class="fa fa-search ms-1"></i></a>
-                                    </div>
-                        
-                                    
-            
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     
                 </div>
@@ -253,73 +176,56 @@
                         <div class="card shadow menu slidedown position-absolute zindex-modal">
                             <div class="card-body p-3">
                                 <div class="row g-3">
-                                    <div class="d-none d-lg-block col-lg-2 text-start">
-                                        <h6 class="px-2 text-primary mb-0">Download App</h6>
-                                        <img src="{{ asset('template/Html/dist/assets/images/qr-code.png')}}" alt="Download App" class="img-fluid">
-                                    </div>
                                     <div class="col-lg-10">
                                         <ul class="menu-grid list-unstyled row row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 g-4 mb-0 mt-lg-3">
                                             <li class="col">
-                                                <a href="help.html" class="d-flex color-700">
-                                                    <div class="avatar">
+                                                <a href="faleconosco.pdf" target="_blank" class="d-flex color-700">
+                                                <div class="avatar">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 38 38">
+                                                            <circle xmlns="http://www.w3.org/2000/svg"   cx="19" cy="19" r="11" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></circle>
+                                                            <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M19,2c9.374,0,17,7.626,17,17c0,8.304-6.011,15.3-14,16.725v-2.025C28.847,32.309,34,26.257,34,19  c0-8.284-6.716-15-15-15S4,10.716,4,19s6.716,15,15,15c0.338,0,0.668-0.028,1-0.05V36h-1C9.626,36,2,28.374,2,19S9.626,2,19,2z   M20,23.417c0-2.067,0.879-2.99,1.896-4.06C22.882,18.322,24,17.148,24,15c0-2.757-2.243-5-5-5s-5,2.243-5,5h2c0-1.654,1.346-3,3-3  s3,1.346,3,3c0,1.348-0.651,2.032-1.552,2.979C19.357,19.124,18,20.55,18,23.417V26h2V23.417z M20,28h-2v2h2V28z"></path>
+                                                        </svg>
+                                                    </div>
+
+
+                                                    <div class="flex-fill text-truncate">
+                                                        <p class="h6 mb-0">Ajuda</p>
+                                                        <small class="text-muted">Precisa de Ajuda?</small>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li class="col">
+                                                <a href="faleconosco.pdf" target="_blank" class="d-flex color-700">
+                                                <div class="avatar">
                                                         <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 38 38">
                                                             <circle xmlns="http://www.w3.org/2000/svg"   cx="19" cy="19" r="11" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></circle>
                                                             <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M19,2c9.374,0,17,7.626,17,17c0,8.304-6.011,15.3-14,16.725v-2.025C28.847,32.309,34,26.257,34,19  c0-8.284-6.716-15-15-15S4,10.716,4,19s6.716,15,15,15c0.338,0,0.668-0.028,1-0.05V36h-1C9.626,36,2,28.374,2,19S9.626,2,19,2z   M20,23.417c0-2.067,0.879-2.99,1.896-4.06C22.882,18.322,24,17.148,24,15c0-2.757-2.243-5-5-5s-5,2.243-5,5h2c0-1.654,1.346-3,3-3  s3,1.346,3,3c0,1.348-0.651,2.032-1.552,2.979C19.357,19.124,18,20.55,18,23.417V26h2V23.417z M20,28h-2v2h2V28z"></path>
                                                         </svg>
                                                     </div>
                                                     <div class="flex-fill text-truncate">
-                                                        <p class="h6 mb-0">Help</p>
-                                                        <small class="text-muted">How May I Help You?</small>
+                                                        <p class="h6 mb-0">Fale Conosco!</p>
+                                                        <small class="text-muted">support@exgate.io</small>
                                                     </div>
                                                 </a>
                                             </li>
                                             <li class="col">
-                                                <a href="ui-elements/ui-alerts.html" class="d-flex color-700">
-                                                    <div class="avatar">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24">
-                                                            <rect xmlns="http://www.w3.org/2000/svg" class="st2" width="24" height="24" style="fill:none;;" fill="none"></rect>
-                                                            <path xmlns="http://www.w3.org/2000/svg"   d="M13,1.07V9h7C20,4.92,16.95,1.56,13,1.07z M4,15c0,4.42,3.58,8,8,8s8-3.58,8-8v-4H4V15z   M11,1.07C7.05,1.56,4,4.92,4,9h7V1.07z" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></path>
-                                                            <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M13,1.07V9h7C20,4.92,16.95,1.56,13,1.07z M11,1.07C7.05,1.56,4,4.92,4,9h7V1.07z" style="opacity:0.2;fill:#FFFFFF;;" fill="rgb(255, 255, 255)"></path>
-                                                            <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M6,15c-1.66,0-2.491,0.82-2.941,2.418C2.628,18.939,2.625,19.625,1,20.407C1.92,21.38,3.49,22,5,22  c2.21,0,4-1.563,4-3.719C9,16.389,7.66,15,6,15z M21.49,5C20,7,17.96,10.04,16,12c-1.48,1.48-5.48,3.93-5.48,3.93L8.07,13.48  c0,0,2.45-4,3.93-5.48c1.96-1.96,5-4,7-5.48c0.78-0.58,1.8-0.69,2.49,0C22.17,3.2,22.06,4.22,21.49,5z"></path>
-                                                            <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M16,12c-1.479,1.48-5.477,3.927-5.477,3.927l-2.449-2.45c0,0,2.445-3.998,3.926-5.477L16,12z"></path>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="flex-fill text-truncate">
-                                                        <p class="h6 mb-0">UI Components</p>
-                                                        <small class="text-muted">Bootstrap Components</small>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="col">
-                                                <a href="invoices.html" class="d-flex color-700">
+                                                <a href="bitcoin.pdf" target="_blank" class="d-flex color-700">
                                                     <div class="avatar">
                                                         <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 38 38">
-                                                            <path xmlns="http://www.w3.org/2000/svg"   d="M22,6h2c0.875,0,1.513,0.657,2,1.31V10h4.501L32,12v24H22V6z" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></path>
-                                                            <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M10,14v18h18V14h-6v2h4v14h-6v-2.059c1.989-0.236,3-1.22,3-2.941c0-0.805-0.27-1.5-0.78-2.01  C21.226,21.998,19.654,22.003,19,22c-0.352-0.007-1.398,0.002-1.806-0.405C17.111,21.512,17,21.359,17,21c0-0.469,0-1,2-1  c1.122,0,1.788,0.205,2.297,0.709l1.406-1.422c-0.704-0.697-1.568-1.083-2.703-1.222V14H10z M18,18.059  c-1.988,0.236-3,1.221-3,2.941c0,0.805,0.271,1.5,0.781,2.01c0.994,0.992,2.543,0.989,3.22,0.99  c0.343-0.008,1.397-0.002,1.805,0.405C20.89,24.488,21,24.641,21,25c0,0.469,0,1-2,1c-1.121,0-1.787-0.205-2.297-0.709l-1.406,1.422  c0.705,0.697,1.568,1.083,2.703,1.222V30h-6V16h6V18.059z M30,14v20H8V4h15c0.46,0,1,0.26,1,1v3H12v2h12v2h7.99  c0,0-6.08-8.17-6.62-8.87C24.83,2.44,23.99,2,23,2H6v34h26V14H30z M26,7.31L28.01,10H26V7.31z"></path>
+                                                            <circle xmlns="http://www.w3.org/2000/svg"  class="stshockcolor" cx="19" cy="19" r="11" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></circle>
+                                                            <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M36,19c0,8.35-6.05,15.31-14,16.73V33.7c6.84-1.391,12-7.46,12-14.7c0-8.27-6.73-15-15-15C10.73,4,4,10.73,4,19  c0,8.27,6.73,15,15,15c0.34,0,0.67-0.01,1-0.04v2.01C19.67,35.99,19.34,36,19,36C9.63,36,2,28.37,2,19S9.63,2,19,2S36,9.63,36,19z   M19.257,17.588C15.516,16.591,15,15.487,15,14.443c0-1.43,1.4-2.185,3-2.383v3.008c0.412,0.175,0.973,0.375,1.772,0.587  c0.08,0.021,0.149,0.046,0.228,0.068v-3.596c1.726,0.359,3,1.504,3,2.872h2c0-2.442-2.159-4.478-5-4.912V8h-2v2.059  c-2.979,0.285-5,1.998-5,4.384c0,3.126,2.903,4.321,5.743,5.078C20.686,20.037,23,21.074,23,23.085c0,1.611-1.107,2.647-3,2.868  v-3.839c-0.468-0.244-1.069-0.475-1.771-0.661c-0.07-0.019-0.152-0.041-0.229-0.062v4.456c-1.692-0.393-3-1.549-3-2.848h-2  c0,2.424,2.153,4.448,5,4.903V30h2v-2.036c3.445-0.305,5-2.601,5-4.879C25,21.273,24.004,18.849,19.257,17.588z"></path>
                                                         </svg>
                                                     </div>
+
                                                     <div class="flex-fill text-truncate">
-                                                        <p class="h6 mb-0">Invoices</p>
-                                                        <small class="text-muted">Simple, List, Email Invoice </small>
+                                                        <p class="h6 mb-0">O que é BITCOIN (BTC)</p>
+                                                        <small class="text-muted">Como funciona o BITCOIN?</small><br/>
+                                                        <small class="text-muted">Por que negociar BITCOIN na ExGate</small>
                                                     </div>
                                                 </a>
                                             </li>
                                             <li class="col">
-                                                <a href="salaryslip.html" class="d-flex color-700">
-                                                    <div class="avatar">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24">
-                                                            <path xmlns="http://www.w3.org/2000/svg"   d="M20,20c0,1.104-0.896,2-2,2H6c-1.104,0-2-0.896-2-2V4c0-1.104,0.896-2,2-2h8l6,6V20z" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></path>
-                                                            <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M16,8c-1.1,0-1.99-0.9-1.99-2L14,2H6C4.9,2,4,2.9,4,4v16c0,1.1,0.9,2,2,2h1v-1.25C7,19.09,10.33,18,12,18  s5,1.09,5,2.75V22h1c1.1,0,2-0.9,2-2V8H16z M12,17c-1.66,0-3-1.34-3-3s1.34-3,3-3s3,1.34,3,3S13.66,17,12,17z"></path>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="flex-fill text-truncate">
-                                                        <p class="h6 mb-0">SalarySlip</p>
-                                                        <small class="text-muted">Simple SalarySlip</small>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="col">
-                                                <a href="expenses.html" class="d-flex color-700">
+                                                <a href="taxas.pdf" target="_blank" class="d-flex color-700">
                                                     <div class="avatar">
                                                         <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 38 38">
                                                             <circle xmlns="http://www.w3.org/2000/svg"  class="stshockcolor" cx="19" cy="19" r="11" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></circle>
@@ -327,53 +233,25 @@
                                                         </svg>
                                                     </div>
                                                     <div class="flex-fill text-truncate">
-                                                        <p class="h6 mb-0">Expenses</p>
-                                                        <small class="text-muted">Expenses List</small>
+                                                        <p class="h6 mb-0">Taxas, Limites, Comissões e Prazo</p>
+                                                        <small class="text-muted">Taxas</small><br>
+                                                        <small class="text-muted">Limites</small><br>
+                                                        <small class="text-muted">Comissões</small><br>
+                                                        <small class="text-muted">Prazo</small>
                                                     </div>
                                                 </a>
                                             </li>
                                             <li class="col">
-                                                <a href="ui-elements/stater-page.html" class="d-flex color-700">
+                                                <a href="quemsomos.pdf" target="_blank" class="d-flex color-700">
                                                     <div class="avatar">
                                                         <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24">
-                                                            <rect xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="fill:none;;" fill="none"></rect>
                                                             <path xmlns="http://www.w3.org/2000/svg"   d="M20,20c0,1.104-0.896,2-2,2H6c-1.104,0-2-0.896-2-2V4c0-1.104,0.896-2,2-2h8l6,6V20z" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></path>
-                                                            <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M11,13h2v2h-2V13z M20,8v12c0,1.1-0.9,2-2,2H6c-1.1,0-2-0.9-2-2V4c0-1.1,0.9-2,2-2h8l0.01,4  c0,1.1,0.891,2,1.99,2H20z M17,11h-2V9h-2v2h-2V9H9v2H7v2h2v2H7v2h2v2h2v-2h2v2h2v-2h2v-2h-2v-2h2V11z"></path>
+                                                            <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M16,8c-1.1,0-1.99-0.9-1.99-2L14,2H6C4.9,2,4,2.9,4,4v16c0,1.1,0.9,2,2,2h1v-1.25C7,19.09,10.33,18,12,18  s5,1.09,5,2.75V22h1c1.1,0,2-0.9,2-2V8H16z M12,17c-1.66,0-3-1.34-3-3s1.34-3,3-3s3,1.34,3,3S13.66,17,12,17z"></path>
                                                         </svg>
                                                     </div>
                                                     <div class="flex-fill text-truncate">
-                                                        <p class="h6 mb-0">Stater page</p>
-                                                        <small class="text-muted">Start working with</small>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="col">
-                                                <a href="ui-elements/documentation.html" class="d-flex color-700">
-                                                    <div class="avatar">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 32 32">
-                                                            <path xmlns="http://www.w3.org/2000/svg"   d="M25.5,9.78V28.5c0,0.56-0.44,1-1,1h-17c-0.56,0-1-0.44-1-1v-25c0-0.55,0.45-1,1-1h10.72  L25.5,9.78z" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></path>
-                                                            <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M19.5,9.5c-0.561,0-1-0.439-1-1V2.793L25.207,9.5H19.5z"></path>
-                                                        <path xmlns="http://www.w3.org/2000/svg" class="st0" d="M19,16c0-2.65,0.54-4,2-4c0.98,0,1.7,0.63,2,1.83l-0.89,0.6C21.92,13.49,21.43,13,21,13c-0.62,0-1,1.01-1,3  s0.38,3,1,3c0.43,0,0.92-0.49,1.11-1.43l0.89,0.6c-0.3,1.2-1.02,1.83-2,1.83C19.54,20,19,18.65,19,16z M18,16c0,3-0.9,4-2,4  c-1.1,0-2-1-2-4s0.9-4,2-4C17.1,12,18,13,18,16z M17,16c0-0.7,0-3-1-3s-1,2.3-1,3s0,3,1,3S17,16.7,17,16z M13,16.04  c0,2.88-0.8,3.96-2.4,3.96C9.8,20,9,20,9,20v-8c0,0,0.8,0,1.6,0C12.2,12,13,13.15,13,16.04z M12,16.03c0-2.17-0.52-3.03-1.33-3.03  c-0.4,0-0.67,0-0.67,0v6c0,0,0.27,0,0.67,0C11.48,19,12,18.2,12,16.03z M26,10v18.5c0,0.828-0.672,1.5-1.5,1.5h-17  C6.672,30,6,29.328,6,28.5v-25C6,2.672,6.672,2,7.5,2H18c0.621,0,0.646,0.232,1,0.586L25.414,9C25.768,9.354,26,9.368,26,10z   M19,8.5C19,8.776,19.224,9,19.5,9c0,0,2.639,0,4.5,0l-5-5V8.5z M25,10h-5.5C18.672,10,18,9.328,18,8.5V3c0,0-9.5,0-10.5,0  C7.225,3,7,3.224,7,3.5v25C7,28.776,7.225,29,7.5,29h17c0.275,0,0.5-0.224,0.5-0.5C25,28,25,10,25,10z"></path>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="flex-fill text-truncate">
-                                                        <p class="h6 mb-0">Documentation</p>
-                                                        <small class="text-muted">How to Install</small>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="col">
-                                                <a href="ui-elements/changelog.html" class="d-flex color-700">
-                                                    <div class="avatar">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24">
-                                                            <rect xmlns="http://www.w3.org/2000/svg"  width="24" height="24" fill="none"></rect>
-                                                            <polygon xmlns="http://www.w3.org/2000/svg" class="st0"  points="22,6 22,12 20,12 20,9.42 13,16.41 8.95,12.36 2.65,17.76 1.35,16.24 9.05,9.64   13,13.59 18.58,8 16,8 16,6 "></polygon>
-                                                            <polygon xmlns="http://www.w3.org/2000/svg" class="st1" points="11.91,12.5 10.58,13.99 8.95,12.36 2.65,17.76 1.35,16.24 9.05,9.64 "></polygon>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="flex-fill text-truncate">
-                                                        <p class="h6 mb-0">Changelog</p>
-                                                        <small class="text-muted">Changelog Update</small>
+                                                        <p class="h6 mb-0">Quem Somos</p>
+                                                        <small class="text-muted">Exgate</small>
                                                     </div>
                                                 </a>
                                             </li>
@@ -403,25 +281,58 @@
 
                 <div class="row g-3 mb-3 row-cols-1 row-cols-lg-2">
 
-                    <div class="col">
-                        <div class="card">
+                <div class="col">
+                    <div class="card">
+                        <!-- Contêiner flex para os itens card-body -->
+                        <div class="d-flex flex-row align-items-center">
+                            <!-- Primeiro item card-body -->
                             <div class="card-body d-flex align-items-center">
                                 <div class="flex-fill text-truncate">
-                                    <span class="text-muted small text-uppercase">BTC/USDT</span>
+                                    <span class="text-muted small text-uppercase">
+                                        <a href="https://app.exgate.io/exchange">BTC/USDT</a> <img src="bit.jpeg" width="20" />
+                                    </span>
                                     <div class="d-flex flex-column">
                                         <div class="price-block">
-                                            <span class="fs-6 fw-bold color-price-up">{{$price}}</span>
+                                            <span class="fs-6 fw-bold color-price-up">$ {{number_format($price, 2, ',', '.')}}</span>
+                                            <!-- Subtexto de valorização ou desvalorização -->
+                                            @if($pctChangeUsd > 0)
+                                            <span class="small text-success">+{{number_format($pctChangeUsd, 2, ',', '.')}}% <i class="fa fa-arrow-up"></i></span>
+                                            @elseif($pctChange < 0)
+                                            <span class="small text-danger">{{number_format($pctChangeUsd, 2, ',', '.')}}% <i class="fa fa-arrow-down"></i></span>
+                                            @else
+                                            <span class="small text-muted">0,00% <i class="fa fa-minus"></i></span>
+                                            @endif
                                         </div>
-                                        <div class="price-report">
-                                            <span class="small text-danger">- 1.28% <i class="fa fa-level-down"></i></span>
-                                            <span class="small text-muted px-2">Volume:109,267,865.92 BUSD</span>
-                                        </div>
+                                        <!-- Comentado: price-report -->
                                     </div>
                                 </div>
                             </div>
-                    
+                            <!-- Segundo item card-body -->
+                            <div class="card-body d-flex align-items-center">
+                                <div class="flex-fill text-truncate">
+                                    <span class="text-muted small text-uppercase">
+                                        <a href="https://app.exgate.io/trocas">USDT/BRL</a> <img src="usdt.jpeg" width="20" />
+                                    </span>
+                                    <div class="d-flex flex-column">
+                                        <div class="price-block">
+                                            <span class="fs-6 fw-bold color-price-up">R$ {{number_format($priceBrl, 2, ',', '.')}}</span>
+                                            <!-- Subtexto de valorização ou desvalorização -->
+                                            @if($pctChange > 0)
+                                            <span class="small text-success">+{{number_format($pctChange, 2, ',', '.')}}% <i class="fa fa-arrow-up"></i></span>
+                                            @elseif($pctChange < 0)
+                                            <span class="small text-danger">{{number_format($pctChange, 2, ',', '.')}}% <i class="fa fa-arrow-down"></i></span>
+                                            @else
+                                            <span class="small text-muted">0,00% <i class="fa fa-minus"></i></span>
+                                            @endif
+                                        </div>
+                                        <!-- Comentado: price-report -->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+
 
                     <div class="col">
                         <div class="card">
@@ -433,7 +344,7 @@
                                             <img class="avatar rounded-circle" src="{{ asset('template/Html/dist/assets/images/profile_av.svg')}}" alt="profile">
                                             <div class="flex-fill ms-3">
                                                 <p class="mb-0"><span class="font-weight-bold">{{$user->name}}</span></p>
-                                                <small class="">{{$user->email}}</small>
+                                                <small class="">{{$person->email_obfuscated}}</small>
                                             </div>
                                         </div>
                                     </div>
@@ -470,18 +381,23 @@
                                         <div class="row g-3">
                                             <div class="col-lg-6">
                                                 <div>Saldo da conta:</div>
-                                                <h3>0.00000000 USDT</h3>
-                                                <div class="mt-3 pt-3 text-uppercase text-muted pt-2 small">Posição de venda</div>
-                                                <h5>0.00000000 BTC</h5>
-                                                <div class="mt-3 text-uppercase text-muted small">Posição de compra</div>
-                                                <h5>0.00000000 BTC</h5>
+                                                <h3>{{number_format($this->wallet->amount, 10, '.', '')}} BTC <img src="bit.jpeg" style="margin-bottom:3px;" width="20" /></h3>
+                                                <div class="mt-3 text-uppercase text-muted small">Saldo em USDT </div>
+                                                <h5>$ {{number_format($this->wallet->amountusdt, 2, '.')}} <img src="usdt.jpeg" width="20" /></h5>
+                                                <div class="mt-3 text-uppercase text-muted small">Saldo em BRL </div>
+                                                <h5>R$ {{number_format($this->wallet->amountbrl, 2, '.')}}</h5>
+                                                <!--<span class="small text-muted" style="margin-top: -10px; display: block;">R$ {{number_format($this->wallet->amountusdt * $this->priceBrl, 2, ',', '.')}}</span> -->
                                                 <div class="mt-3 text-uppercase text-muted small">Total</div>
-                                                <h5>0.00000000 USDT</h5>
+                                                    <h5>$ {{number_format(($this->wallet->amount * $price) + ($this->wallet->amountbrl / $price) + $this->wallet->amountusdt, 2, '.')}} USDT <img src="usdt.jpeg" width="20" /></h5>
+                                                    <span class="small text-muted" style="margin-top: -10px; display: block;">R$ {{number_format(($this->wallet->amountusdt + ($this->wallet->amount * $price)) * $this->priceBrl, 2, ',', '.')}}</span>
+
+                                                    <input data-amount="{{number_format($this->wallet->amount, 10, '.', '')}}" type='hidden'/>
+                                                    <input data-usd="{{number_format($this->wallet->amountusdt, 2, '.', '.')}}" type='hidden'/>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div id="apex-simple-donut"></div>
+                                                </div>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <div id="apex-simple-donut"></div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -491,17 +407,24 @@
                         <div class="card">
                             <div class="card-header py-3 d-flex justify-content-between bg-transparent align-items-center">
                                 <h6 class="mb-0 fw-bold">Aumente a segurança de sua conta</h6> 
-                                <a href="security.html" title="security" class="d-inline-flex"><i class="icofont-caret-right fs-5"></i></a>
+                                <a href="/security" title="security" class="d-inline-flex"><i class="icofont-caret-right fs-5"></i></a>
                             </div>
                             <div class="card-body">
                                 <div class="row row-cols-2 g-0">
                                     <div class="col">
                                         <div class="security border-bottom">
                                             <div class="d-flex align-items-start px-2 py-3">
-                                                <div class="dot-green mx-2 my-2"></div>
+                                                <div class="{{ $this->person->isverifieddocument ? 'dot-green' : 'dot-red' }} mx-2 my-2"></div>
                                                 <div class="d-flex flex-column">
                                                     <span class="flex-fill text-truncate">Verificar identidade</span>
-                                                    <span>Verificado</span>
+                                                    <span>
+                                                        @if($this->person->isverifieddocument)
+                                                            Verificado
+                                                        @else
+                                                            <!-- <a href="https://app.exgate.io/identification">Não Verificado - Clique para verificar</a><br/> -->
+                                                        <button type="button" wire:click="sendIdentidade" class="btn btn-sm btn-success">Verificar Agora</button>
+                                                        @endif
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -511,8 +434,8 @@
                                             <div class="d-flex align-items-start px-2 py-3">
                                                 <div class="dot-green mx-2 my-2"></div>
                                                 <div class="d-flex flex-column">
-                                                    <span class="flex-fill text-truncate">Número de telefone</span>
-                                                    <span>74****57</span>
+                                                    <span class="flex-fill">Número de telefone</span>
+                                                    <span>{{$this->person->phone_obfuscated}}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -520,10 +443,29 @@
                                     <div class="col">
                                         <div class="security ">
                                             <div class="d-flex align-items-start px-2 py-3">
-                                                <div class="dot-green mx-2 my-2"></div>
+                                                <div class="{{ $this->user->email_verified_at ? 'dot-green' : 'dot-red' }} mx-2 my-2"></div>
                                                 <div class="d-flex flex-column">
-                                                    <span class="flex-fill text-truncate">Endereço de email</span>
-                                                    <span>ni***@gmail.com</span>
+                                                    <span class="flex-fill">Endereço de Email</span>
+                                                    <span>{{$this->person->email_obfuscated}}</span>
+                                                    @if(!$this->user->email_verified_at)
+                                                        <button type="button" wire:click="sendEmail" class="btn btn-sm btn-success">Verificar Agora</button>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="security ">
+                                            <div class="d-flex align-items-start px-2 py-3">
+                                                <div class="{{ $this->user->is2fa ? 'dot-green' : 'dot-red' }} mx-2 my-2"></div>
+                                                <div class="d-flex flex-column">
+                                                    <span class="flex-fill">Habilitar 2FA</span>
+                                                    @if($this->user->is2fa)
+                                                        Habilitado
+                                                    @else
+                                                        <!-- <a href="https://app.exgate.io/security">Não Verificado - Clique para verificar</a> -->
+                                                        <button type="button" wire:click="sendSecurity" class="btn btn-sm btn-success">Verificar Agora</button>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -547,56 +489,12 @@
                                             <li class="d-flex align-items-center py-2">
                                                 <div class="avatar rounded no-thumbnail chart-text-color1"><i class="fa fa-globe" aria-hidden="true"></i></div>
                                                 <div class="flex-fill ms-3">
-                                                    <div class="h6 mb-0">web</div>
-                                                    <small class="text-muted">Mumbai India</small>
+                                                    <div class="h6 mb-0">Web</div>
+                                                    <small class="text-muted">Brasil</small>
                                                 </div>
                                                 <div class="flex-end">
                                                     <span class="d-block text-end">122.170.109.22</span>
-                                                    <span class="text-muted d-block small">2021-09-30 11:00:52</span>
-                                                </div>
-                                            </li>
-                                            <li class="d-flex align-items-center py-2">
-                                                <div class="avatar rounded no-thumbnail chart-text-color2"><i class="fa fa-globe" aria-hidden="true"></i></div>
-                                                <div class="flex-fill ms-3">
-                                                    <div class="h6 mb-0">web</div>
-                                                    <small class="text-muted">Mumbai India</small>
-                                                </div>
-                                                <div class="flex-end">
-                                                    <span class="d-block text-end">122.170.109.22</span>
-                                                    <span class="text-muted d-block small">2021-09-30 11:00:20</span>
-                                                </div>
-                                            </li>
-                                            <li class="d-flex align-items-center py-2">
-                                                <div class="avatar rounded no-thumbnail chart-text-color3"><i class="fa fa-globe" aria-hidden="true"></i></div>
-                                                <div class="flex-fill ms-3">
-                                                    <div class="h6 mb-0">web</div>
-                                                    <small class="text-muted">Mumbai India</small>
-                                                </div>
-                                                <div class="flex-end">
-                                                    <span class="d-block text-end">122.170.109.21</span>
-                                                    <span class="text-muted d-block small">2021-09-29 10:56:22</span>
-                                                </div>
-                                            </li>
-                                            <li class="d-flex align-items-center py-2">
-                                                <div class="avatar rounded no-thumbnail chart-text-color4"><i class="fa fa-globe" aria-hidden="true"></i></div>
-                                                <div class="flex-fill ms-3">
-                                                    <div class="h6 mb-0">web</div>
-                                                    <small class="text-muted">Pune India</small>
-                                                </div>
-                                                <div class="flex-end">
-                                                    <span class="d-block text-end">198.182.109.22</span>
-                                                    <span class="text-muted d-block small">2021-09-30 12:50:52</span>
-                                                </div>
-                                            </li>
-                                            <li class="d-flex align-items-center py-2">
-                                                <div class="avatar rounded no-thumbnail chart-text-color2"><i class="fa fa-globe" aria-hidden="true"></i></div>
-                                                <div class="flex-fill ms-3">
-                                                    <div class="h6 mb-0">web</div>
-                                                    <small class="text-muted">Banglor India</small>
-                                                </div>
-                                                <div class="flex-end">
-                                                    <span class="d-block text-end">126.150.109.22</span>
-                                                    <span class="text-muted d-block small">2021-09-30 10:00:20</span>
+                                                    <span class="text-muted d-block small">{{$user->last_login}}</span>
                                                 </div>
                                             </li>
                                         </ul>
@@ -607,55 +505,55 @@
                                                 <div class="avatar rounded no-thumbnail chart-text-color1"><i class="fa fa-chrome" aria-hidden="true"></i></div>
                                                 <div class="flex-fill ms-3">
                                                     <div class="h6 mb-0">Chrome V94.0.4606.61 (Windows)</div>
-                                                    <small class="text-muted">Mumbai India</small>
+                                                    <small class="text-muted">Brasil</small>
                                                 </div>
                                                 <div class="flex-end">
                                                     <span class="d-block text-end">122.170.109.22</span>
-                                                    <span class="text-muted d-block small">2021-09-30 11:00:52</span>
+                                                    <span class="text-muted d-block small">2024-02-30 11:00:52</span>
                                                 </div>
                                             </li>
                                             <li class="d-flex align-items-center py-2">
                                                 <div class="avatar rounded no-thumbnail chart-text-color2"><i class="fa fa-mobile" aria-hidden="true"></i></div>
                                                 <div class="flex-fill ms-3">
                                                     <div class="h6 mb-0">iPhone</div>
-                                                    <small class="text-muted">Mumbai India</small>
+                                                    <small class="text-muted">Brasil</small>
                                                 </div>
                                                 <div class="flex-end">
                                                     <span class="d-block text-end">27.57.172.87</span>
-                                                    <span class="text-muted d-block small">2021-09-23 09:03:35</span>
+                                                    <span class="text-muted d-block small">2024-02-30 11:00:52</span>
                                                 </div>
                                             </li>
                                             <li class="d-flex align-items-center py-2">
                                                 <div class="avatar rounded no-thumbnail chart-text-color3"><i class="fa fa-firefox" aria-hidden="true"></i></div>
                                                 <div class="flex-fill ms-3">
                                                     <div class="h6 mb-0">Mozila V92.0.4515.159 (Windows)</div>
-                                                    <small class="text-muted">Mumbai India</small>
+                                                    <small class="text-muted">Brasil</small>
                                                 </div>
                                                 <div class="flex-end">
                                                     <span class="d-block text-end">117.99.104.150</span>
-                                                    <span class="text-muted d-block small">2021-08-19 08:01:44</span>
+                                                    <span class="text-muted d-block small">2024-02-30 11:00:52</span>
                                                 </div>
                                             </li>
                                             <li class="d-flex align-items-center py-2">
                                                 <div class="avatar rounded no-thumbnail chart-text-color4"><i class="fa fa-mobile" aria-hidden="true"></i></div>
                                                 <div class="flex-fill ms-3">
                                                     <div class="h6 mb-0">Android</div>
-                                                    <small class="text-muted">Pune India</small>
+                                                    <small class="text-muted">Brasil</small>
                                                 </div>
                                                 <div class="flex-end">
                                                     <span class="d-block text-end">118.99.104.150</span>
-                                                    <span class="text-muted d-block small">2021-09-30 12:50:52</span>
+                                                    <span class="text-muted d-block small">2024-02-30 11:00:52</span>
                                                 </div>
                                             </li>
                                             <li class="d-flex align-items-center py-2">
                                                 <div class="avatar rounded no-thumbnail chart-text-color3"><i class="fa fa-safari" aria-hidden="true"></i></div>
                                                 <div class="flex-fill ms-3">
                                                     <div class="h6 mb-0">Safari V84.0.4515.159 (Mac)</div>
-                                                    <small class="text-muted">Banglor India</small>
+                                                    <small class="text-muted">Brasil</small>
                                                 </div>
                                                 <div class="flex-end">
                                                     <span class="d-block text-end">177.192.104.150</span>
-                                                    <span class="text-muted d-block small">2021-08-19 07:01:44</span>
+                                                    <span class="text-muted d-block small">2024-02-30 11:00:52</span>
                                                 </div>
                                             </li>
                                         </ul>
@@ -666,7 +564,7 @@
                     </div>
                 </div><!-- Row End -->
 
-                <div class="row g-3 mb-3 row-deck">
+                <!-- <div class="row g-3 mb-3 row-deck">
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header py-3 d-flex justify-content-between">
@@ -680,56 +578,26 @@
                                             <th>Par</th>
                                             <th>Lado</th>
                                             <th>Preço</th>
-                                            <th>Executado</th>
-                                            <th>Taxa</th>
                                             <th>Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach($this->ordersHistory as $history)
                                         <tr>
-                                            <td>09-18 17:32:15</td>
-                                            <td><img src="{{ asset('template/Html/dist/assets/images/coin/BTC.png')}}" alt="" class="img-fluid avatar mx-1">BTC/USDT</td>
-                                            <td><span class="color-price-down">Sell</span></td>
-                                            <td>3,487.50</td>
-                                            <td>0.0110</td>
-                                            <td>0.03836250 USDT</td>
-                                            <td>38.36250000 USDT</td>
+                                            <td>{{$history->created_at}}</td>
+                                            <td>{{$history->direction == 'sell' ? 'BTC' : 'BTC' }}</td>
+                                            <td><span class="{{$history->direction == 'sell' ? 'color-price-down' : 'color-price-up' }} ">{{$history->direction}}</span></td>
+                                            <td>{{number_format($history->price_open, 2, '.')}} USDT</td>
+                                            <td>{{number_format($history->price_open * $history->amount, 2, '.')}} USDT</td>
                                         </tr>
-                                        <tr>
-                                            <td>09-18 17:32:15</td>
-                                            <td><img src="{{ asset('template/Html/dist/assets/images/coin/BTC.png')}}" alt="" class="img-fluid avatar mx-1">BTC/USDT</td>
-                                            <td><span class="color-price-down">Sell</span></td>
-                                            <td>3,487.50</td>
-                                            <td>0.0110</td>
-                                            <td>0.03836250 USDT</td>
-                                            <td>38.36250000 USDT</td>
-                                        </tr>
-                                        <tr>
-                                            <td>09-18 17:32:15</td>
-                                            <td><img src="{{ asset('template/Html/dist/assets/images/coin/BTC.png')}}" alt="" class="img-fluid avatar mx-1">BTC/USDT</td>
-                                            <td><span class="color-price-down">Sell</span></td>
-                                            <td>3,487.50</td>
-                                            <td>0.0110</td>
-                                            <td>0.03836250 USDT</td>
-                                            <td>38.36250000 USDT</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>09-18 17:32:15</td>
-                                            <td><img src="{{ asset('template/Html/dist/assets/images/coin/BTC.png')}}" alt="" class="img-fluid avatar mx-1">BTC/USDT</td>
-                                            <td><span class="color-price-down">Sell</span></td>
-                                            <td>3,487.50</td>
-                                            <td>0.0110</td>
-                                            <td>0.03836250 USDT</td>
-                                            <td>38.36250000 USDT</td>
-                                        </tr>                                       
+                                        @endforeach                                  
 
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                </div><!-- Row End -->
+                </div>Row End -->
 
             </div>
         </div>

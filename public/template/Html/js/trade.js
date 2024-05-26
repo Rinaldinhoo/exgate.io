@@ -6,6 +6,7 @@
     const rangeInput = document.querySelector('.form-range');
 
     const inputWallet = document.getElementById('wallet_74yr64');
+    const inputMargem = document.getElementById('margem_74yr64');
 
 
     function formatData(string)
@@ -19,10 +20,10 @@
     }
 
     rangeInput.addEventListener('input', (event) => {
-
-        const walletMargin = parseFloat(inputWallet.value) * 125;
-    
-        let percentageValue;
+        // const walletMargin = parseFloat(inputWallet.value) * (parseFloat(inputMargem.value / 100));
+        const walletMargin = parseFloat(inputMargem.value );
+        // alert(parseFloat(inputWallet.value)+' '+(inputMargem.value / 100) + ' '+inputMargem.value);
+         let percentageValue;
     
         switch(event.target.value) {
             case '1':
@@ -45,7 +46,13 @@
                 break;
         }
     
-        const walletMarginPercentage = walletMargin * percentageValue;
+        let coin = document.getElementById('dropdownMenuButton').textContent;
+        let walletMarginPercentage= 0;
+        if (coin == 'USDT') {
+            walletMarginPercentage = walletMargin * percentageValue;
+        } else {
+            walletMarginPercentage = walletMargin * percentageValue;
+        }
 
         Livewire.emit('updateAmount', walletMarginPercentage);
         Livewire.emit('updatePriceBuySell', walletMarginPercentage);
@@ -75,6 +82,7 @@ $(document).ready(function() {
         chart: {
             height: 600,
             type: 'candlestick',
+            background: '#1e1f1e',
             toolbar: {
                 show: true,
                 tools: {
@@ -110,8 +118,8 @@ $(document).ready(function() {
         plotOptions: {
             candlestick: {
                 colors: {
-                    upward: '#3C90EB',
-                    downward: '#DF7D46'
+                    upward: '#26a32a',
+                    downward: '#ff0400'
                 },
                 wick: {
                     useFillColor: true
@@ -155,7 +163,7 @@ $(document).ready(function() {
     async function updatePrice() {
      
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/last-pricing');
+            const response = await fetch('https://app.exgate.io/api/last-pricing');
     
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -169,7 +177,15 @@ $(document).ready(function() {
 
             const priceInputElement = document.getElementById('price_84dee');
 
+            const priceInputOElement = document.getElementById('price_84dae');
+
+            const priceInputFElement = document.getElementById('price_85dae');
+
             priceInputElement.value = data.askPrice;
+
+            priceInputOElement.innerHTML = `BTC/USDT ${parseFloat(data.askPrice).toFixed(2)}`
+
+            priceInputFElement.innerHTML = `BTC/USDT ${parseFloat(data.askPrice).toFixed(2)}`
 
             priceElement.innerHTML = `BTC/USDT ${btcusdtValue}`; 
 
@@ -190,7 +206,7 @@ $(document).ready(function() {
 
         try {
             // Fazendo a chamada fetch de maneira assíncrona
-            const response = await fetch('http://127.0.0.1:8000/api/pricing');
+            const response = await fetch('https://app.exgate.io/api/pricing');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }

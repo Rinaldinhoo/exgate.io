@@ -8,8 +8,8 @@
             <!-- header rightbar icon -->
             <div class="row align-items-center">
                 <div class="col">
-                    <a href="../index.html" class="d-flex align-item-center">
-                        <img src="{{ asset('exgate.png') }}" width="50px" />
+                    <a href="/welcome" wire:ignore class="d-flex align-item-center">
+                        <img src="{{$this->config->logomarca}}" width="150px" />
                     </a>
                 </div>
                 <div class="col-auto">
@@ -31,10 +31,10 @@
         <div class="body d-flex p-0 p-xl-5">
             <div class="container-xxl">
                 <div class="row g-3">
-                    <div class="col-lg-6 d-flex justify-content-center align-items-center auth-h100">
+                    <div class="col-lg-12 d-flex justify-content-center align-items-center auth-h100">
                         <div class="d-flex flex-column">
                             <h1>Login da conta</h1>
-                            <span class="text-muted">Bem vindo de volta! Faça login com seu e-mail, número de telefone ou código QR</span>
+                            <span class="text-muted">Bem vindo de volta! Faça login com seu e-mail ou número de telefone</span>
                             <!--
                             
                             <ul class="nav nav-pills mt-4" role="tablist">
@@ -92,19 +92,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="auth-password-reset.html" title="#" class="text-primary text-decoration-underline">Esqueceu sua senha?</a>
-                            <a href="{{route('register')}}" title="#" class="text-primary text-decoration-underline">Registrar agora</a>
+                            <!-- <a href="#" title="#" class="text-primary text-decoration-underline">Esqueceu sua senha?</a> -->
+                            <a href="https://app.exgate.io/register" title="#" class="text-primary text-decoration-underline">Registrar agora</a>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#esqueciSenhaModal" title="#" class="text-primary text-decoration-underline">Esqueci Senha</a>
                         </div>
                     </div>
 
-                    <div class="col-lg-6 d-none d-lg-flex justify-content-center align-items-center auth-h100">
+                    <!-- <div class="col-lg-6 d-none d-lg-flex justify-content-center align-items-center auth-h100">
                         <div class="qr-block text-center">
-                            
-                            <img src="{{ asset('template/Html/dist/assets/images/qr-code.png') }}" alt="#" class="img-fluid my-4">
-                            <h4>Entrar com código QR</h4>
                             <p>Escaneie este código com o <span class="text-primary">Aplicativo móvel Coinnext</span><br/> para fazer login instantaneamente.</p>
                         </div>
-                    </div>
+                    </div> -->
                 </div> <!-- End Row -->
                 
             </div>
@@ -239,6 +237,32 @@
                         <button type="button" class="btn btn-white border lift" data-dismiss="modal">Fechar</button>
                         <button type="button" class="btn btn-primary lift">Salvar Alterações</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="esqueciSenhaModal" wire:ignore tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Recuperar Senha</h5>
+                    <button type="button" class="close btn" data-bs-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulário para digitar o e-mail -->
+                    <form >
+                    <div class="form-group">
+                        <label for="emailInput">Endereço de e-mail</label>
+                        <input type="email" class="form-control" wire:model.defer="emailforgot" placeholder="Digite seu e-mail">
+                        @error('emailforgot') <span class="text-danger">{{ $message }}</span> @enderror
+                        
+                        <small id="emailHelp" class="form-text text-muted">Nós enviaremos instruções para recuperar sua senha.</small>
+                    </div>
+                    <button type="button" wire:click="forgotPassword" class="btn btn-primary">Enviar</button>
+                    </form>
+                </div>
                 </div>
             </div>
         </div>

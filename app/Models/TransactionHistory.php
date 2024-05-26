@@ -18,6 +18,12 @@ class TransactionHistory extends Model
         'type',
         'coin',
         'address',
-        'status'
+        'status',
+        'cpf',
+        'user_id',
+        'namecomplete',
+        'bank',
+        'agency',
+        'currency'
     ];
 }

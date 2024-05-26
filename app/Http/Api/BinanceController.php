@@ -6,22 +6,36 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
+use App\Models\Config;
+
 class BinanceController extends Controller
 {
 
     public function index()
     {
+        $config = Config::first();
+        $porcetagem = $config->porcetagem;
         $binance = $this->pricing();
+        
+        // $velas = array_map(function ($vela) {
+        //     return [
 
-        $velas = array_map(function ($vela) {
+        //         'time_open' => $vela[0],
+        //         'time_close' => $vela[6],
+        //         'price_open' => $vela[1],
+        //         'price_close' => $vela[4],
+        //         'min' => $vela[3],
+        //         'max' => $vela[2],
+        //     ];
+        // }, $binance);
+        $velas = array_map(function ($vela) use ($porcetagem) {
             return [
-
                 'time_open' => $vela[0],
                 'time_close' => $vela[6],
-                'price_open' => $vela[1],
-                'price_close' => $vela[4],
-                'min' => $vela[3],
-                'max' => $vela[2],
+                'price_open' => $vela[1] + ($vela[1] * $porcetagem / 100), // Aplica a porcentagem ao preço de abertura
+                'price_close' => $vela[4] + ($vela[4] * $porcetagem / 100), // Aplica a porcentagem ao preço de fechamento
+                'min' => $vela[3] + ($vela[3] * $porcetagem / 100), // Aplica a porcentagem ao preço mínimo
+                'max' => $vela[2] + ($vela[2] * $porcetagem / 100), // Aplica a porcentagem ao preço máximo
             ];
         }, $binance);
 
@@ -62,6 +76,8 @@ class BinanceController extends Controller
 
     public function lastPricing()
     {
+        $config = Config::first();
+
         $url = 'https://api.binance.com/api/v3/ticker/24hr';
         $parameters = [
             'symbol' => 'BTCUSDT',  
@@ -87,8 +103,12 @@ class BinanceController extends Controller
         $decoded = json_decode($response);
 
         $askPrice = $decoded->askPrice;
+        $aumento = ($askPrice * $config->porcetagem) / 100;
 
-        $arr = ['askPrice' => $askPrice];
+        // original
+        // $arr = ['askPrice' => $askPrice];
+        
+        $arr = ['askPrice' => $askPrice + $aumento];
 
         return response()->json($arr);
     }

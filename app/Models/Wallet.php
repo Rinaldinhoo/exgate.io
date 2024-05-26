@@ -14,6 +14,11 @@ class Wallet extends Model
     protected $fillable = [
         'person_id',
         'amount',
-
+        'amountusdt',
+        'amountbrl',
+        'amountmargem',
+        'amountcpa',
+        'cpatotal',
+        'isoperated'
     ];
 }

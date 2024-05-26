@@ -18,10 +18,13 @@ class Order extends Model
         'price_closed',
         'gain_loss',
         'amount',
+        'executed',
         'total',
         'direction',
         'take_proft',
         'stop_loss',
+        'typecoin',
+        'type',
         'status'
     ];
 }

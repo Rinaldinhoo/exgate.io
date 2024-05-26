@@ -13,8 +13,12 @@
 
                     <div class="card">
                         <div class="card-body">
+                            <div wire:ignore class="m-sm-3 text-center">
+                                <img src="{{$this->config->logomarca}}" width="150px" />
+                            </div>
                             <div class="m-sm-3">
-                                <form >
+                                <form wire:submit.prevent="register">
+                                    @csrf
                                     <div class="mb-3">
                                         <label class="form-label">Nome completo</label>
                                         <input wire:model="name" class="form-control form-control-lg" type="text" name="name" placeholder="Digite seu nome completo" />
@@ -26,19 +30,25 @@
                                         @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                                     </div>
                                     <div class="mb-3">
+                                        <label class="form-label">Telefone</label>
+                                        <input wire:model="phone" class="form-control form-control-lg" type="telefone" name="phone" placeholder="Digite seu telefone" />
+                                        @error('phone') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div class="mb-3">
                                         <label class="form-label">Senha</label>
-                                        <input wire:model="password" class="form-control form-control-lg" type="password" name="password" placeholder="Digite dua senha" />
+                                        <input wire:model="password" class="form-control form-control-lg" type="password" name="password" placeholder="Digite sua senha" />
                                         @error('password') <span class="text-danger">{{ $message }}</span> @enderror
                                     </div>
                                     <div class="d-grid gap-2 mt-3">
-                                        <button class="btn btn-lg btn-primary">Registrar</button>
+                                        <button type="submit" class="btn btn-lg btn-primary">Registrar</button>
                                     </div>
+                                    <p style="font-size:12px">Ao clicar em registrar, você concorda com nossos <a href="termos.pdf" style="text-decoration:underline" target="_blank">termos e condições</a></p>
                                 </form>
                             </div>
                         </div>
                     </div>
                     <div class="text-center mb-3">
-                        Já tem uma conta? <a href="{{route('login')}}">Entrar</a>
+                        Já tem uma conta? <a href="https://app.exgate.io/login">Entrar</a>
                     </div>
                 </div>
             </div>

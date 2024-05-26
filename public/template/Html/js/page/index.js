@@ -112,6 +112,9 @@ $(function() {
     });
 
     // SIMPLE DONUT
+    var dataAmount = document.querySelector('[data-amount]').getAttribute('data-amount');
+        var dataUsd = document.querySelector('[data-usd]').getAttribute('data-usd');
+
     $(document).ready(function() {
       var options = {
           chart: {
@@ -126,9 +129,9 @@ $(function() {
               horizontalAlign: 'center',
               show: true,
           },
-          colors: ['var(--chart-color1)', 'var(--chart-color2)', 'var(--chart-color3)'],
-          series: [25, 25, 50],
-          labels: ['USDT', 'VENDA', 'COMPRA'], 
+          colors: ['var(--chart-color1)', 'var(--chart-color2)', '#f2e474'],
+          series: [parseFloat(dataUsd), parseFloat(dataAmount), parseFloat(0)],
+          labels: ['USDT', 'BITCOIN', 'OUTROS'], 
           responsive: [{
               breakpoint: 480,
               options: {

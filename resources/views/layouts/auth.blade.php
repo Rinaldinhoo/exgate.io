@@ -14,7 +14,7 @@
 	
 </head>
 
-	<body>
+	<body class="font-montserrat">
 
 		<main>
 			{{$slot}}
@@ -24,7 +24,22 @@
 
 		<script src="{{ asset('template/Html/dist/assets/bundles/libscripts.bundle.js') }}"></script>
 
-		<script src="{{ asset('template/Html/js/template.js') }}"></script>
+		<script src="{{ asset('template/Html/js/template.js?v=1') }}"></script>
+
+		<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				window.addEventListener('swal:modal', event => {
+					$('#esqueciSenhaModal').modal('hide');
+					Swal.fire({
+						icon: event.detail.type,
+						title: event.detail.title,
+						text: event.detail.text,
+						confirmButtonText: 'Fechar'
+					});
+				});
+			});
+		</script>
 
 	</body>
 

@@ -1,143 +1,130 @@
-/*
-* Admin Layout (cryptoon)
-* @author: Pixelwibes
-* @design by: Pixelwibes.
-* @event-namespace:cryptoon
-* Copyright 2021 Pixelwibes
-*/
+function inicializarComponentes() {
+    // Inicialização do widget da TradingView
+    chartLoad(localStorage.getItem('theme') || 'light');
 
-if (typeof jQuery === "undefined") {
-    throw new Error("jQuery plugins need to be before this file");
+    // Inicialização dos DataTables
+    inicializarDataTables();
+
+    // Listener para a troca de temas
+    configurarListenersDeTema();
 }
-$(function() {
-    "use strict";
-    // top sparklines
-    chartLoad(localStorage.getItem('theme'));
-    const setTheme = (theme) => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme); //add this
-        chartLoad(theme)
-    };
 
+function chartLoad(chartTheme) {
+    // Substitua pelo código de inicialização do seu widget da TradingView
+    console.log(`Carregando o tema do gráfico: ${chartTheme}`);
+    // Exemplo: Inicialização do widget TradingView (substitua pelos seus parâmetros)
+    new TradingView.widget({
+        "autosize": true,
+        "symbol": "BITSTAMP:BTCUSD",
+        "interval": "D",
+        "timezone": "Etc/UTC",
+        "theme": chartTheme,
+        "style": "1",
+        "locale": "in",
+        "toolbar_bg": "#f1f3f6",
+        "enable_publishing": false,
+        "withdateranges": true,
+        "hide_side_toolbar": false,
+        "allow_symbol_change": true,
+        "details": true,
+        "hotlist": true,
+        "calendar": true,
+        "container_id": "tradingview_e05b7"
+    });
+}
+
+function inicializarDataTables() {
+    // Destrua as instâncias anteriores antes de reinicializar
+    if ($.fn.DataTable.isDataTable('.dataTable')) {
+        $('.dataTable').DataTable().clear().destroy();
+    }
+    $('.dataTable').DataTable({
+        responsive: true,
+        columnDefs: [{ targets: [-1, -3], className: 'dt-body-right' }]
+    });
+}
+
+function configurarListenersDeTema() {
     var toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
     var toggleHcSwitch = document.querySelector('.theme-high-contrast input[type="checkbox"]');
 
-    toggleSwitch.addEventListener('change', switchTheme, false);
-    toggleHcSwitch.addEventListener('change', switchTheme, false);
-
-    function switchTheme(e) {
-        setTheme(e.target.checked ? 'dark' : 'light');
+    if (toggleSwitch) {
+        toggleSwitch.removeEventListener('change', switchTheme);
+        toggleSwitch.addEventListener('change', switchTheme, false);
     }
-    function chartLoad(chartTheme) {
-        //chart
-        new TradingView.widget(
-            {
-                "autosize": true,
-                "symbol": "BITSTAMP:BTCUSD",
-                "interval": "D",
-                "timezone": "Etc/UTC",
-                "theme": chartTheme,
-                "style": "1",
-                "locale": "in",
-                "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false,
-                "withdateranges": true,
-                "hide_side_toolbar": false,
-                "allow_symbol_change": true,
-                "details": true,
-                "hotlist": true,
-                "calendar": true,
-                "container_id": "tradingview_e05b7"
-            }
-        );
+    if (toggleHcSwitch) {
+        toggleHcSwitch.removeEventListener('change', switchTheme);
+        toggleHcSwitch.addEventListener('change', switchTheme, false);
     }
-    // project data table
-    $(document).ready(function() {
-        $('#priceTableup')
-        .addClass( 'nowrap' )
-        .dataTable( {
-            responsive: true,
-            columnDefs: [
-                { targets: [-1, -3], className: 'dt-body-right' }
-            ]
-        });
+}
 
-        $('#priceTabledown')
-        .addClass( 'nowrap' )
-        .dataTable( {
-            responsive: true,
-            columnDefs: [
-                { targets: [-1, -3], className: 'dt-body-right' }
-            ]
-        });
+function switchTheme(e) {
+    // Função para alternar entre temas claro e escuro
+    var theme = e.target.checked ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    chartLoad(theme); // Atualiza o tema do gráfico
+}
 
-        $('#priceTableuponly')
-        .addClass( 'nowrap' )
-        .dataTable( {
-            responsive: true,
-            columnDefs: [
-                { targets: [-1, -3], className: 'dt-body-right' }
-            ]
-        });
-      
-        $('#priceTabledownonly')
-        .addClass( 'nowrap' )
-        .dataTable( {
-            responsive: true,
-            columnDefs: [
-                { targets: [-1, -3], className: 'dt-body-right' }
-            ]
-        });
-
-        $('#ordertabone')
-        .addClass( 'nowrap' )
-        .dataTable( {
-            responsive: true,
-            columnDefs: [
-                { targets: [-1, -3], className: 'dt-body-right' }
-            ]
-        });
-
-        $('#ordertabtwo')
-        .addClass( 'nowrap' )
-        .dataTable( {
-            responsive: true,
-            columnDefs: [
-                { targets: [-1, -3], className: 'dt-body-right' }
-            ]
-        });
-
-        $('#ordertabthree')
-        .addClass( 'nowrap' )
-        .dataTable( {
-            responsive: true,
-            columnDefs: [
-                { targets: [-1, -3], className: 'dt-body-right' }
-            ]
-        });
-
-        $('#ordertabfour')
-        .addClass( 'nowrap' )
-        .dataTable( {
-            responsive: true,
-            columnDefs: [
-                { targets: [-1, -3], className: 'dt-body-right' }
-            ]
-        });
-
-        //Data Table//
-        
-        $('#priceTableup','#priceTabledown','#priceTableuponly','#priceTabledownonly','#ordertabone','#ordertabtwo','#ordertabthree','#ordertabfour').DataTable({
-            responsive: true
-        });
-
-        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-            $($.fn.dataTable.tables(true)).DataTable()
-            .columns.adjust()
-            .responsive.recalc();
-        });    
-    });
-
+// Quando o DOM estiver pronto
+$(document).ready(function() {
+    inicializarComponentes();
 });
 
+// Para reinicializar componentes após atualizações do Livewire
+document.addEventListener('livewire:load', function() {
+    inicializarComponentes();
+    
+    // Adicione aqui outros hooks do Livewire se necessário
+});
+$(document).ready(function() {
+async function updatePrice() {
+     
+    try {
+        const response = await fetch('https://app.exgate.io/api/last-pricing');
 
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+
+        const btcusdtValue = parseFloat(data.askPrice).toFixed(2);
+
+        // const priceElement = document.getElementById('price_44456');
+
+        // const priceInputElement = document.getElementById('price_84dee');
+
+        // priceInputElement.value = data.askPrice;
+
+        // priceElement.innerHTML = `BTC/USDT ${btcusdtValue}`; 
+
+        Livewire.emit('updatePrice', data.askPrice);
+        setTimeout(() => {
+            Livewire.emit('updatePrice', data.askPrice);
+        }, 2000);
+
+      //  Livewire.emit('updatePrice', data.askPrice);
+        let totalbuy = document.getElementById('totalbuy').value;
+        let totalsell = document.getElementById('totalsell').value;
+        if (totalbuy) {
+            // document.getElementById("amountbuy").value = (totalbuy / document.getElementById('pricenow').value);
+        }else {
+            document.getElementById("amountbuy").value = "";
+		}
+
+        if (totalsell) {
+            // document.getElementById("amountsell").value = (totalsell / document.getElementById('pricenow').value).toFixed(8);
+        }else {
+            document.getElementById("amountsell").value = "";
+		}
+
+    } catch (error) {
+        console.error('Failed to update price:', error);
+    }
+}
+
+setInterval(updatePrice, 5000);
+
+updatePrice();
+});

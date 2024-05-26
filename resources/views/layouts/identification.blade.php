@@ -20,7 +20,7 @@
 	</head>
 
 
-	<body>
+	<body class="font-montserrat">
 
 		<main>
 			{{$slot}}
@@ -32,7 +32,7 @@
 
 		<script src="{{ asset('template/Html/dist/assets/bundles/libscripts.bundle.js') }}"></script>
 
-		<script src="{{ asset('template/Html/js/template.js') }}"></script>
+		<script src="{{ asset('template/Html/js/template.js?v=1') }}"></script>
 
 	</body>
 

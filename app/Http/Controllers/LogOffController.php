@@ -10,6 +10,7 @@ class LogOffController extends Controller
     function logOff()
     {
         Auth::logout(); 
-        return redirect('/');
+        //return redirect('/');
+        return redirect('https://app.exgate.io/');
     }
 }
