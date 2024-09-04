@@ -21,9 +21,11 @@ class Order extends Model
         'executed',
         'total',
         'direction',
+        'liquidation',
         'take_proft',
         'stop_loss',
         'typecoin',
+        'typestop',
         'type',
         'status'
     ];

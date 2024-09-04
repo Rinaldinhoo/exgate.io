@@ -37,7 +37,17 @@ class ShowCoupons extends Component
         
         $this->wallet = Wallet::where('person_id', $this->person->id)->first();
         
-        $this->affList = User::where('aflevel1', $this->user->code)->Orwhere('aflevel2', $this->user->code)->orderBy('id', 'desc')->get();
+        //$this->affList = User::where('aflevel1', $this->user->code)->Orwhere('aflevel2', $this->user->code)->orderBy('id', 'desc')->get();
+        $this->affList = User::where(function ($query) {
+            $query->where('aflevel1', $this->user->code)
+                  ->orWhere('aflevel2', $this->user->code);
+        })
+        ->where(function ($query) {
+            $query->where('aflevel1', '>', 0)
+                  ->orWhere('aflevel2', '>', 0);
+        })
+        ->orderBy('id', 'desc')
+        ->get();
     }
 
     public function render()

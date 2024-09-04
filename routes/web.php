@@ -31,7 +31,7 @@ Route::get('/verified', ShowVerified::class)->name('verified');
 
 Route::get('/register', ShowRegister::class)->name('register');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'check-session'])->group(function () {
 
     Route::get('/', ShowWelcome::class)->name('welcome');
 

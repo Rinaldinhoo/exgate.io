@@ -6,6 +6,8 @@ use App\Http\Api\UserController;
 use App\Http\Api\CoinMarketcapController;
 use App\Http\Api\PricingController;
 use App\Http\Api\WalletController;
+use App\Http\Api\SuitpayController;
+use App\Http\Api\AktaController;
 
 use App\Http\Api\BinanceController;
 use App\Http\Api\OrderController;
@@ -33,9 +35,16 @@ Route::middleware('cors')->group(function () {
     Route::get('pricing', [BinanceController::class, 'index']);
 
     Route::get('last-pricing', [BinanceController::class, 'lastPricing']);
+    Route::get('klines', [BinanceController::class, 'kline']);
 
     Route::get('order-by-person-id', [OrderController::class, 'getOrderByPersonId']);
 
     Route::get('btc-usdt', [BinanceController::class, 'btcUsdtData']);
+
+    Route::post('webhooks/suitpay', [SuitpayController::class, 'webhook']);
+    Route::get('suitpay/status', [SuitpayController::class, 'status']);
+
+    Route::post('webhooks/akta', [AktaController::class, 'webhook']);
+    Route::get('akta/status', [AktaController::class, 'status']);
 
 });

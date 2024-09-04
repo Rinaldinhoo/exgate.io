@@ -32,6 +32,7 @@ class User extends Authenticatable
         'aflevel1',
         'aflevel2',
         'is2fa',
+        'session_id',
         'code2fa',
         'temporary_password',
         'temporary_password_expires_at',

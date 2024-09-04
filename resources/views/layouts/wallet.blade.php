@@ -16,10 +16,24 @@
 		<link rel="stylesheet" href="{{ asset('template/Html/dist/assets/plugin/datatables/responsive.dataTables.min.css') }}">
 
 		<link rel="stylesheet" href="{{ asset('template/Html/dist/assets/plugin/datatables/dataTables.bootstrap5.min.css') }}">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+   
 		<style>
+			#pixCode {
+				word-wrap: break-word;
+				overflow-wrap: break-word;
+				max-width: 100%;
+				white-space: pre-wrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
 			.table-responsive {
 				overflow-x: auto;
 				-webkit-overflow-scrolling: touch;
+			}
+			.icon-large {
+				font-size: 7rem;
+				color: green;
 			}
 	
 		@media screen and (max-width: 768px) {
@@ -31,6 +45,10 @@
 				/* Adiciona mais espaço de padding para cada célula em dispositivos menores */
 				padding: 10px;
 			}
+		}
+
+		.hidden {
+			display: none;
 		}
 		</style>
 	</head>
@@ -54,6 +72,8 @@
 
 		<script src="{{ asset('template/Html/js/template.js?v=1') }}"></script>
 
+		<script src="{{ asset('qrcode.min.js?v=1') }}"></script>
+
 		<script src="{{ asset('template/Html/js/page/wallet.js?v=4') }}"></script>
 		<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script>
@@ -67,9 +87,58 @@
 					alert('Erro ao copiar texto, tente novamente.');
 				});
 			}
+
+			function copyPixCode() {
+				var copyText = document.getElementById("pixCode").innerText; // Pega o texto do elemento span
+				navigator.clipboard.writeText(copyText).then(function() {
+					console.log('Texto copiado com sucesso!');
+					document.getElementById('msgCode').classList.remove('d-none');
+
+				}).catch(function(error) {
+					console.error('Erro ao copiar texto: ', error);
+					alert('Erro ao copiar texto, tente novamente.');
+				});
+			}
 		</script>
 		<script>
 			document.addEventListener('DOMContentLoaded', function () {
+				window.addEventListener('pix', event => {
+					$(document).ready(function() {
+						$('#modalQrcode').modal('show');
+
+						var qrcode = new QRCode(document.getElementById("qrcode"), {
+							text: event.detail.paymentCode,
+							width: 256,
+							height: 256,
+							colorDark : "#000000",
+							colorLight : "#ffffff",
+							correctLevel : QRCode.CorrectLevel.L
+						});
+						$('#pixCode').html(event.detail.paymentCode)
+
+						var transactionId = event.detail.idTransaction; // Assumindo que você tem um ID de transação
+
+						var checkStatusInterval = setInterval(function() {
+							$.ajax({
+								url: '/api/suitpay/status',
+								method: 'GET',
+								data: { idTransaction: transactionId },
+								success: function(response) {
+									if (response.status === 'Concluido') {
+										//$('#modalQrcode').modal('hide');
+										$('#qrcode').addClass('d-none');
+										$('#pixCode').addClass('d-none');
+										$('#successIcon').removeClass('d-none');	
+										clearInterval(checkStatusInterval);
+									}
+								},
+								error: function(xhr, status, error) {
+									console.error('Erro ao verificar o status da transação:', error);
+								}
+							});
+						}, 5000);
+					} );
+				});
 				window.addEventListener('swal:modal', event => {
 					$('#modalAutenticacao').modal('hide');
 					Swal.fire({

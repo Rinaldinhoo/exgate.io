@@ -78,92 +78,82 @@
 
 
 $(document).ready(function() {
-    var options = {
-        chart: {
-            height: 600,
-            type: 'candlestick',
-            background: '#1e1f1e',
-            toolbar: {
-                show: true,
-                tools: {
-                    download: true,
-                    selection: true,
-                    zoom: true,
-                    zoomin: true,
-                    zoomout: true,
-                    pan: true,
-                    reset: true
-                },
-                autoSelected: 'pan' // Pode alternar para 'pan' conforme preferência
-            },
-            zoom: {
-                enabled: true,
-                type: 'x', // Zoom apenas no eixo X
-                autoScaleYaxis: true // Ajusta automaticamente o eixo Y ao fazer zoom
-            },
-            animations: {
-                enabled: true,
-                easing: 'easeinout',
-                speed: 800,
-                animateGradually: {
-                    enabled: true,
-                    delay: 150
-                },
-                dynamicAnimation: {
-                    enabled: true,
-                    speed: 350
-                }
-            }
-        },
-        plotOptions: {
-            candlestick: {
-                colors: {
-                    upward: '#26a32a',
-                    downward: '#ff0400'
-                },
-                wick: {
-                    useFillColor: true
-                }
-            }
-        },
-        series: [{
-            data: []
-        }],
-        xaxis: {
-            type: 'datetime'
-        },
-        yaxis: {
-            tooltip: {
-                enabled: true
-            },
-            labels: {
-                align: 'right'
-            },
-            opposite: true // Isso posiciona o eixo Y no lado direito
+    // const chart = LightweightCharts.createChart(document.getElementById('myChart'), {
+    //     width: window.innerWidth,
+    //     height: 600,
+    //     layout: {
+    //         backgroundColor: '#1e1f1e',
+    //         textColor: 'rgba(255, 255, 255, 0.9)',
+    //     },
+    //     grid: {
+    //         vertLines: {
+    //             color: 'rgba(197, 203, 206, 0.5)',
+    //         },
+    //         horLines: {
+    //             color: 'rgba(197, 203, 206, 0.5)',
+    //         },
+    //     },
+    //     priceScale: {
+    //         borderColor: 'rgba(197, 203, 206, 0.8)',
+    //     },
+    //     timeScale: {
+    //         borderColor: 'rgba(197, 203, 206, 0.8)',
+    //     },
+    // });
+
+    // const candleSeries = chart.addCandlestickSeries({
+    //     upColor: '#4caf50',
+    //     downColor: '#f44336',
+    //     borderDownColor: '#f44336',
+    //     borderUpColor: '#4caf50',
+    //     wickDownColor: '#f44336',
+    //     wickUpColor: '#4caf50',
+    // });
+    
+    async function fetchCandleData() {
+        try {
+            const response = await fetch('/api/klines'); // URL da sua API
+            const data = await response.json();
+            const candleData = data.pricingData.map(candle => ({
+                time: new Date(candle.time_open).getTime() / 1000, // Converter para timestamp em segundos
+                open: parseFloat(candle.price_open),
+                high: parseFloat(candle.max),
+                low: parseFloat(candle.min),
+                close: parseFloat(candle.price_close),
+            }));
+            candleSeries.setData(candleData);
+        } catch (error) {
+            console.error('Failed to fetch candle data:', error);
         }
-    };
-
-    var chart = new ApexCharts(document.querySelector("#myChart"), options);
-    chart.render();
-
-    function updateChart(pricingData) {
-        const transformedData = pricingData.map(data => ({
-            x: new Date(data.time_open),
-            y: [
-                parseFloat(data.price_open),
-                parseFloat(data.max),
-                parseFloat(data.min),
-                parseFloat(data.price_close)
-            ]
-        }));
-
-        chart.updateSeries([{ data: transformedData }]);
     }
+
+    async function updateCandleData() {
+        try {
+            const response = await fetch('/api/klines'); // URL da sua API
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            const lastCandle = {
+                time: new Date(data.time_open).getTime() / 1000, // Converter para timestamp em segundos
+                open: parseFloat(data.price_open),
+                high: parseFloat(data.max),
+                low: parseFloat(data.min),
+                close: parseFloat(data.price_close),
+            };
+            candleSeries.update(lastCandle);
+        } catch (error) {
+            console.error('Failed to update candle data:', error);
+        }
+    }
+
+    //fetchCandleData();
+    //setInterval(updateCandleData, 5000); // Atualiza a cada 5 segundos
 
     async function updatePrice() {
      
         try {
-            const response = await fetch('https://app.exgate.io/api/last-pricing');
+            const response = await fetch('/api/last-pricing');
     
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -189,8 +179,6 @@ $(document).ready(function() {
 
             priceElement.innerHTML = `BTC/USDT ${btcusdtValue}`; 
 
-            handlePrices();
-
             setTimeout(() => {
                 Livewire.emit('updatePrice', data.askPrice);
             }, 2000);
@@ -202,30 +190,10 @@ $(document).ready(function() {
         }
     }
 
-    async function handlePrices() {
 
-        try {
-            // Fazendo a chamada fetch de maneira assíncrona
-            const response = await fetch('https://app.exgate.io/api/pricing');
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            // Aguarda a conversão da resposta para JSON
-            const data = await response.json();
-            updateChart(data);
-     
-    
-        } catch (error) {
-            console.error('Erro ao buscar os dados:', error);
-        }
-    }
-
-
-    setInterval(updatePrice, 30000);
+    setInterval(updatePrice, 3000);
 
     updatePrice();
-
-    handlePrices();
 
 });
 

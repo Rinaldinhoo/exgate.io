@@ -18,6 +18,8 @@ use App\Models\InternalTransfer;
 use App\Http\Api\BinanceController;
 use Illuminate\Support\Facades\Http;
 use RobThree\Auth\TwoFactorAuth;
+use App\Http\Service\SuitPayService;
+use App\Http\Service\AktaService;
 
 class ShowWallet extends Component
 {
@@ -49,6 +51,7 @@ class ShowWallet extends Component
     public $amontTranfer;
     public $price;
     public $typeCoin = 'USDT';
+    public $typeCoinDeposit = 'USDT';
     
     protected $listeners = [
         'updatecoin' => 'setTypecoin',
@@ -56,7 +59,7 @@ class ShowWallet extends Component
 
     public function mount()
     {
-        $this->config = Config::select('logomarca')->first();
+        $this->config = Config::select(['logomarca', 'min_deposit', 'min_deposit_pix', 'min_withdraw', 'min_withdraw_pix'])->first();
         $this->user = Auth::user();
         $this->user->name = Str::limit($this->user->name, 15);
         $this->user->email = Str::limit($this->user->email, 15);
@@ -84,7 +87,6 @@ class ShowWallet extends Component
             $this->pctChangeUsd = $data['BTCUSD']['pctChange'];
         }
         $binanceController = new BinanceController();
-
         $priceResponse = $binanceController->lastPricing();
         if ($priceResponse instanceof \Illuminate\Http\JsonResponse) {
             // Decodifica o JSON para um array PHP
@@ -131,7 +133,14 @@ class ShowWallet extends Component
             return ["error" => "Valor inválido."];
         }
 
-        if ($this->depositValue < 10) {
+        $min = $this->config->min_deposit;
+        $max = 10000;
+        if ($this->typeCoinDeposit == 'PIX') {
+            $min = ($this->config->min_deposit_pix - 1);
+            $max = 500;
+        }
+
+        if ($this->depositValue < $min) {
             $this->dispatchBrowserEvent('swal:modal', [
                 'type' => 'error',
                 'title' => 'Erro de Validação!',
@@ -141,21 +150,50 @@ class ShowWallet extends Component
             return ["error" => "Valor inválido."];
         }
 
+        if ($this->depositValue > $max) {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'error',
+                'title' => 'Erro de Validação!',
+                'text' => 'O valor máximo informado não é válido. Por favor, verifique e tente novamente.',
+            ]);
+            return ["error" => "Valor inválido."];
+        }
+
+        $callbackUrl = 'https://app.exgate.io/api/webhooks/akta';
+        if ($this->typeCoinDeposit == 'PIX') {
+            $suitPayService = new SuitPayService();
+            // $aktaService = new AktaService();
+            $qrCode = $suitPayService->generateQrPix($this->user, $callbackUrl, $this->depositValue);
+        }
+
         $deposit = TransactionHistory::create([
             'wallet_id' => $this->wallet->id,
             'amount' => $this->depositValue,
             'address' => $this->address,
             'type' => 'Deposito',
-            'coin' => 'USDT',
+            'coin' => $this->typeCoinDeposit,
             'status' => 'Pendente',
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
+            // 'codepix' => $qrCode['id']??null
+            'codepix' => $qrCode['idTransaction']??null
         ]);
 
-        $this->dispatchBrowserEvent('swal:modal', [
-            'type' => 'success',
-            'title' => 'Operação Realizada com Sucesso',
-            'text' => 'Realize o depósito do valor selecionado e aguarde conclusão.',
-        ]);
+        if ($this->typeCoinDeposit == 'PIX') {
+            $this->dispatchBrowserEvent('pix', [
+                'type' => 'success',
+                'title' => 'Operação Realizada com Sucesso',
+                // 'idTransaction' => $qrCode['id'],
+                // 'paymentCode' => $qrCode['pix']['qrcode'],
+                'idTransaction' => $qrCode['idTransaction'],
+                'paymentCode' => $qrCode['paymentCode'],
+            ]);
+        } else {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'success',
+                'title' => 'Operação Realizada com Sucesso',
+                'text' => 'Realize o depósito do valor selecionado e aguarde conclusão.',
+            ]);
+        }
     }
 
     public function withdrawal()
@@ -187,6 +225,17 @@ class ShowWallet extends Component
                 'type' => 'error',
                 'title' => 'Erro!',
                 'text' => 'Valor inválido.',
+            ]);
+        
+            return ["error" => "Valor inválido."];
+        }
+        
+        // if ($this->value < 30) {
+        if ($this->value < $this->config->min_withdraw) {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'error',
+                'title' => 'Erro!',
+                'text' => 'Abaixo do mínimo saque',
             ]);
         
             return ["error" => "Valor inválido."];

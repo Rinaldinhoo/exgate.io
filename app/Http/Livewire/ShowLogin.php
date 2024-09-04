@@ -11,6 +11,7 @@ use App\Mail\PasswordReset;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Config;
+use Illuminate\Support\Facades\Session;
 
 class ShowLogin extends Component
 {
@@ -75,10 +76,12 @@ class ShowLogin extends Component
                 $this->addError('loginError', 'Por favor Admin, gere uma senha temoporario');
             }
             Auth::login($user);
+            $user->session_id = Session::getId();
+            $user->save();
 
             $user->update(['last_login' => Carbon::now('America/Sao_Paulo')]);
 
-            return redirect('https://app.exgate.io/welcome');
+            return redirect('/welcome');
         } else {
             $this->addError('loginError', 'Por favor, verifique seu e-mail antes de prosseguir.');
 

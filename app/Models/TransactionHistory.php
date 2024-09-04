@@ -24,6 +24,7 @@ class TransactionHistory extends Model
         'namecomplete',
         'bank',
         'agency',
-        'currency'
+        'currency',
+        'codepix'
     ];
 }

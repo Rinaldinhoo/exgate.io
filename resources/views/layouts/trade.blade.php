@@ -90,7 +90,7 @@
 				});
 
 				window.addEventListener('contentChanged', event => {
-					atualizarDataTableteste('#ordertabone', '#OpenOrder', '#OpenOrder');
+					//atualizarDataTableteste('#ordertabone', '#OpenOrder', '#OpenOrder');
 					// setTimeout(() => {
 					// 	atualizarDataTable('#ordertabtwo', '#OrderHistory', '#OrderHistory');
 					// }, 100);
@@ -103,6 +103,18 @@
 					// 	atualizarDataTable('#ordertabone', '#OpenOrder', '#OpenOrder');
 					// }, 500);
 				});
+			});
+
+			document.getElementById('graphic').addEventListener('click', function() {
+				// var graph = document.getElementById('graph');
+				// graph.classList.toggle('d-none');
+				
+				// if (graph.classList.contains('d-none')) {
+				// 	this.textContent = 'Abrir Gráfico';
+				// } else {
+				// 	this.textContent = 'Fechar Gráfico';
+				// }
+				window.open('https://br.tradingview.com/chart/?symbol=CRYPTO%3ABTCUSD', '_blank');
 			});
 			
 			function atualizarDataTable(idtable, idhtml, selectorAba) {
@@ -123,6 +135,36 @@
 					Livewire.emit('updatecoin', coin);
 					document.getElementById('dropdownMenuButton').textContent = coin;
 			}
+		</script>
+		<script>
+			function disableButton(button) {
+				if (!button.disabled) {
+					button.disabled = true;
+				} else {
+					return false; // Se o botão já estiver desativado, não faça nada
+				}
+			}
+			
+			document.addEventListener('livewire:load', function () {
+				const botoes = document.querySelectorAll('.fechar');
+				botoes.forEach(botao => {
+					botao.addEventListener('click', () => {
+						botao.disabled = true; // Desabilita o botão imediatamente após o clique
+					});
+				});
+
+				Livewire.on('bloquearBotoes', function () {
+					botoes.forEach(botao => {
+						botao.disabled = true;
+					});
+				});
+
+				Livewire.on('desbloquearBotoes', function () {
+					botoes.forEach(botao => {
+						botao.disabled = false;
+					});
+				});
+			});
 		</script>
 	</body>
 

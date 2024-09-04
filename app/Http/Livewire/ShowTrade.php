@@ -13,6 +13,8 @@ use App\Models\User;
 
 use App\Models\Order;
 
+use App\Models\Logs;
+
 use App\Models\Config;
 
 use App\Models\Pricing;
@@ -23,12 +25,15 @@ use App\Http\Api\BinanceController;
 
 class ShowTrade extends Component
 {
+    public $botaoBloqueado = false;
+    public $activeTab = 'Limit';
     public $user;
     public $person;
     public $orders;
     public $ordersOpen;
     public $config;
     public $ordersClose;
+    public $porcetagem;
     public $ordersHistory;
     public $wallet;
     public $price;
@@ -42,7 +47,8 @@ class ShowTrade extends Component
     public $totalOperation;
     public $calcMargem;
     public $margem;
-    public $typeCoin = 'BTC';   
+    public $typeCoin = 'BTC';
+    public $taxa;
 
     protected $listeners = [
         'updatePrice' => 'setPrice', 
@@ -55,7 +61,9 @@ class ShowTrade extends Component
     public function mount()
     {
         $this->user = Auth::user();
-        $this->config = Config::select(['logomarca', 'margem'])->first();
+        $this->config = Config::select(['logomarca', 'margem', 'porcetagem', 'operating_fee', 'profit_rate'])->first();
+        $this->taxa = $this->config->operating_fee;
+        $this->porcetagem = 0;
         $this->margem = $this->config->margem;
         $this->user->name = Str::limit($this->user->name, 15);
         $this->user->email = Str::limit($this->user->email, 15);
@@ -77,10 +85,11 @@ class ShowTrade extends Component
         if ($this->wallet->isoperated == true) {
             $this->calcMargem = $this->wallet->amountmargem;
         } else {
-            $this->calcMargem = ($this->wallet->amountusdt * ($this->config->margem / 100)) - $this->wallet->amountmargem;
+            // $this->calcMargem = ($this->wallet->amountusdt * ($this->config->margem / 100)) - $this->wallet->amountmargem;
+            $this->calcMargem = ($this->wallet->amountusdt * (100 / 100)) - $this->wallet->amountmargem;
         }
         
-        $this->ordersHistory = Order::where('type', 'future')->where('person_id', $this->person->id)->orderBy('created_at', 'desc')->paginate(25)->items();
+        $this->ordersHistory = Order::where('type', 'future')->where('person_id', $this->person->id)->orderBy('created_at', 'desc')->get();
 
         $latestPricing = Pricing::orderBy('id', 'desc')->first();
 
@@ -89,7 +98,22 @@ class ShowTrade extends Component
             $this->price = $latestPricing->price_open;
         } else {
             // Handle the case where no pricing record exists
-            $this->price_open = 0; // or some default value, or trigger an exception, etc.
+            if ($this->price == null) {
+                $binanceController = new BinanceController();
+    
+                $priceResponse = $binanceController->lastPricing();
+    
+                // Se a resposta for um objeto de resposta JSON do Laravel
+                if ($priceResponse instanceof \Illuminate\Http\JsonResponse) {
+                    // Decodifica o JSON para um array PHP
+                    $data = $priceResponse->getData(true);
+                    $this->price = $data['askPrice'];
+                } else {
+                    // Se a resposta for um array ou outro tipo
+                    $this->price = $priceResponse['askPrice'];
+                }
+            }
+            //$this->price_open = 0; // or some default value, or trigger an exception, etc.
         }
 
         $this->total = 0;
@@ -97,6 +121,11 @@ class ShowTrade extends Component
         $this->priceBuy = 0.00;
         $this->priceSell = 0.00;
         $this->rangeValue = 1;
+    }
+
+    public function setActiveTab($tab)
+    {
+        $this->activeTab = $tab;
     }
     
     public function render()
@@ -144,12 +173,13 @@ class ShowTrade extends Component
         // if ($this->wallet->amountmargem > 0 && $this->wallet->isoperated == true) {
         if ($this->wallet->isoperated == true) {
             $this->calcMargem = $this->wallet->amountmargem;
-
         } else {
-            $this->calcMargem = ($this->wallet->amountusdt * ($this->config->margem / 100)) - $this->wallet->amountmargem;
+            // $this->calcMargem = ($this->wallet->amountusdt * ($this->config->margem / 100)) - $this->wallet->amountmargem;
+            $this->calcMargem = ($this->wallet->amountusdt * (100 / 100)) - $this->wallet->amountmargem;
         }
         $this->totalOperation = 0.00;
         $this->rangeValue = 1;
+        $this->emit('desbloquearBotoes');
     }
 
     function calculateTotalValue($inputBitcoinPrice, $inputBitcoinPurchased) {
@@ -181,19 +211,22 @@ class ShowTrade extends Component
 
     public function orderScoreBuy()
     {
-        $margem = Config::first()->margem / 100;
+        $config = Config::first();
+        $liquidationPercent = $config->liquidationpercent / 100;
+        $margemTrue = $config->margem / 100;
+        $margem = 100 / 100;
         
         // Busca a carteira do usuário
         $wallet = Wallet::where('person_id', $this->person->id)->first();
 
-        if($this->takeProft > 0 && $this->takeProft < $this->price * 1.01)
+        if($this->takeProft > 0 && $this->takeProft < $this->price)
         {
-            $this->addError("orderError", "Ganho no take proft inferior a 1%.");
+            $this->addError("orderError", "Ganho no take proft superior valor atual");
 
             return ["error" => "Preço inválido."];
         }
 
-        if($this->stopLoss > $this->price)
+        if($this->stopLoss > 0 && $this->stopLoss > $this->price)
         {
             $this->addError("orderError", "Perda no stop loss inválido.");
 
@@ -208,13 +241,28 @@ class ShowTrade extends Component
             return ["error" => "Quantidade inválida."];
         }
 
+        $binanceController = new BinanceController();
+        $priceResponse = $binanceController->lastPricing();
+
+        // Se a resposta for um objeto de resposta JSON do Laravel
+        if ($priceResponse instanceof \Illuminate\Http\JsonResponse) {
+            // Decodifica o JSON para um array PHP
+            $data = $priceResponse->getData(true);
+            $price = $data['askPrice'];
+
+        } else {
+            // Se a resposta for um array ou outro tipo
+            $price = $priceResponse['askPrice'];
+
+        }
+
         // Calcula o valor mínimo necessário no saldo considerando a margem de 125 vezes
         $maxRequiredBalance = $wallet->amountusdt * $margem;
         // Calcula o valor mínimo necessário no saldo considerando a margem de 125 vezes
         if ($this->typeCoin == 'USDT') {
             $maxRequiredAmount = floatval(str_replace(',', '.', $this->amount));
         } else {
-            $maxRequiredAmount = floatval(str_replace(',', '.', $this->amount)) * $this->price;
+            $maxRequiredAmount = floatval(str_replace(',', '.', $this->amount)) * $price;
         }
 
         $this->totalOperation = $maxRequiredAmount * (1 + $this->cost); //OPERAÇÃO MAIS OS CUSTOS
@@ -230,16 +278,25 @@ class ShowTrade extends Component
 
        // dd(floatval($this->amount));
 
-        $total = $this->calculateTotalValue(floatval($this->price), floatval($this->amount));
-        if ($total < 2)  {
-            $this->addError("orderError", "O valor total do pedido deve ser de no mínimo 2 USDT.");
-            return ["error" => "O valor total do pedido deve ser de no mínimo 2 USDT."];
-        }
+        // APLICANDO TAXA
+        $totalReal = $this->calculateTotalValue(floatval($price), floatval($this->amount));
+        // if ($total < 2)  {
+        //     $this->addError("orderError", "O valor total do pedido deve ser de no mínimo 2 USDT.");
+        //     return ["error" => "O valor total do pedido deve ser de no mínimo 2 USDT."];
+        // }
+        $taxa = $config->operating_fee; // 50%
+        // $applyTax = ($wallet->amountusdt * $taxa) / 100;
+        $applyTax = ($totalReal * $taxa) / 100;
+
+        $total = $totalReal - $applyTax;
+
+        // APLICANDO TAXA
         
+        $priceo = floatval(str_replace(',', '.', $price))?? null;
         $order = Order::create([
 
             'person_id'     => $this->person->id ?? null,
-            'price_open'    => floatval(str_replace(',', '.', $this->price))?? null,
+            'price_open'    => $price,
             'amount'        => floatval(str_replace(',', '.', $this->amount))?? null,
             'total'         => $total,
             'status'        => 'open',
@@ -247,21 +304,22 @@ class ShowTrade extends Component
             'stop_loss'     => floatval($this->stopLoss) ?? null,
             'direction'     => 'buy',
             'type'          => 'future',
-            'typecoin'      => 'BTC'
+            'typecoin'      => 'BTC',
+            'liquidation'   => ($price * $liquidationPercent) - $price
         ]);
 
-        $updateAmount = $maxRequiredAmount / $margem + $cost;
+        $updateAmount = $maxRequiredAmount / $margemTrue + $cost;
         
-        $valorMargem = $wallet->amountusdt * $margem;
+        $valorMargem = $wallet->amountusdt * $margemTrue;
         if ($wallet->amountmargem > 0) {
-            $calc = (float) number_format($wallet->amountmargem - $total, 2, '.', '');
+            $calc = (float) number_format($wallet->amountmargem - $totalReal, 2, '.', '');
         }else {
-            $calc = (float) number_format($valorMargem - ($wallet->amountmargem + $total), 2, '.', '');
+            $calc = (float) number_format($valorMargem - ($wallet->amountmargem + $totalReal), 2, '.', '');
         }
 
         $wallet->update([
             // 'amountusdt' => $wallet->amountusdt - $updateAmount
-            'amountusdt' => number_format($wallet->amountusdt - $total, 2, '.', ''),
+            'amountusdt' => number_format($wallet->amountusdt - $totalReal, 2, '.', ''),
             // 'amountmargem' => number_format($valorMargem - ($wallet->amountmargem + floor($total)), 2, '.', ''),
             'amountmargem' => $calc,
             'isoperated' => true
@@ -276,19 +334,22 @@ class ShowTrade extends Component
 
     public function orderScoreBuyUsdt()
     {
-        $margem = Config::first()->margem / 100;
+        $config = Config::first();
+        $liquidationPercent = $config->liquidationpercent / 100;
+        $margemTrue = $config->margem / 100;
+        $margem = 100 / 100;
         
         // Busca a carteira do usuário
         $wallet = Wallet::where('person_id', $this->person->id)->first();
 
-        if($this->takeProft > 0 && $this->takeProft < $this->price * 1.01)
+        if($this->takeProft > 0 && $this->takeProft < $this->price)
         {
-            $this->addError("orderError", "Ganho no take proft inferior a 1%.");
+            $this->addError("orderError", "Ganho no take proft superior valor atual");
 
             return ["error" => "Preço inválido."];
         }
 
-        if($this->stopLoss > $this->price)
+        if($this->stopLoss > 0 && $this->stopLoss > $this->price)
         {
             $this->addError("orderError", "Perda no stop loss inválido.");
 
@@ -321,38 +382,65 @@ class ShowTrade extends Component
         }
 
        // dd(floatval($this->amount));
+        // APLICANDO TAXA
+        $totalReal = floatval($this->amount);
+        $taxa = $config->operating_fee; // 50%
 
-        $total = floatval($this->amount);
+        // $applyTax = ($wallet->amountusdt * $taxa) / 100;
+        $applyTax = ($totalReal * $taxa) / 100;
 
-        if ($total < 2)  {
-            $this->addError("orderError", "O valor total do pedido deve ser de no mínimo 2 USDT.");
-            return ["error" => "O valor total do pedido deve ser de no mínimo 2 USDT."];
+        $total = $totalReal - $applyTax;
+        // APLICANDO TAXA
+
+        // if ($total < 2)  {
+        //     $this->addError("orderError", "O valor total do pedido deve ser de no mínimo 2 USDT.");
+        //     return ["error" => "O valor total do pedido deve ser de no mínimo 2 USDT."];
+        // }
+
+        //if ($this->price == null) {
+
+        $binanceController = new BinanceController();
+        $priceResponse = $binanceController->lastPricing();
+
+        // Se a resposta for um objeto de resposta JSON do Laravel
+        if ($priceResponse instanceof \Illuminate\Http\JsonResponse) {
+            // Decodifica o JSON para um array PHP
+            $data = $priceResponse->getData(true);
+            $price = $data['askPrice'];
+
+        } else {
+            // Se a resposta for um array ou outro tipo
+            $price = $priceResponse['askPrice'];
+
         }
-        
+
+        //}
+        $priceo = floatval(str_replace(',', '.', $price))?? null;
         $order = Order::create([
 
             'person_id'     => $this->person->id ?? null,
-            'price_open'    => floatval(str_replace(',', '.', $this->price))?? null,
-            'amount'        => floatval(str_replace(',', '.', ($this->amount / $this->price)))?? null,
+            'price_open'    => $price,
+            'amount'        => floatval(str_replace(',', '.', ($this->amount / $price)))?? null,
             'total'         => $total,
             'status'        => 'open',
             'take_proft'    => floatval($this->takeProft) ?? null,
             'stop_loss'     => floatval($this->stopLoss) ?? null,
             'direction'     => 'buy',
             'type'          => 'future',
-            'typecoin'      => 'USDT'
+            'typecoin'      => 'USDT',
+            'liquidation'   => ($price * $liquidationPercent) - $price
         ]);
 
-        $updateAmount = $maxRequiredAmount / $margem + $cost;
+        $updateAmount = $maxRequiredAmount / $margemTrue + $cost;
         
-        $valorMargem = $wallet->amountusdt * $margem;
+        $valorMargem = $wallet->amountusdt * $margemTrue;
         if ($wallet->amountmargem > 0) {
-            $calc = (float) number_format($wallet->amountmargem - $total, 2, '.', '');
+            $calc = (float) number_format($wallet->amountmargem - $totalReal, 2, '.', '');
         }else {
-            $calc = (float) number_format($valorMargem - ($wallet->amountmargem + $total), 2, '.', '');
+            $calc = (float) number_format($valorMargem - ($wallet->amountmargem + $totalReal), 2, '.', '');
         }
 
-        $subtractedValue = $wallet->amountusdt - $total;
+        $subtractedValue = $wallet->amountusdt - $totalReal;
         $wallet->update([
             // 'amountusdt' => $wallet->amountusdt - $updateAmount
             'amountusdt' => number_format($subtractedValue, 2, '.', ''),
@@ -370,20 +458,21 @@ class ShowTrade extends Component
 
     public function orderScoreSell()
     {
-        $margem = Config::first()->margem / 100;
+        $config = Config::first();
+        $liquidationPercent = $config->liquidationpercent / 100;
+        $margemTrue = $config->margem / 100;
+        $margem = 100 / 100;
         // Busca a carteira do usuário
         $wallet = Wallet::where('person_id', $this->person->id)->first();
 
-        
-
-        if($this->takeProft > 0 && $this->takeProft < $this->price * 1.01)
+        if($this->takeProft > 0 && $this->takeProft > $this->price)
         {
-            $this->addError("orderError", "Ganho no take proft inferior a 1%.");
+            $this->addError("orderError", "Ganho no take proft superior valor atual");
 
             return ["error" => "Preço inválido."];
         }
 
-        if($this->stopLoss > $this->price)
+        if($this->stopLoss > 0 && $this->stopLoss < $this->price)
         {
             $this->addError("orderError", "Perda no stop loss inválido.");
 
@@ -398,6 +487,21 @@ class ShowTrade extends Component
             return ["error" => "Quantidade inválida."];
         }
 
+        $binanceController = new BinanceController();
+        $priceResponse = $binanceController->lastPricing();
+
+        // Se a resposta for um objeto de resposta JSON do Laravel
+        if ($priceResponse instanceof \Illuminate\Http\JsonResponse) {
+            // Decodifica o JSON para um array PHP
+            $data = $priceResponse->getData(true);
+            $price = $data['askPrice'];
+
+        } else {
+            // Se a resposta for um array ou outro tipo
+            $price = $priceResponse['askPrice'];
+
+        }
+
         // Calcula o valor mínimo necessário no saldo considerando a margem de 125 vezes
         $maxRequiredBalance = $wallet->amountusdt * $margem;
         // Calcula o valor mínimo necessário no saldo considerando a margem de 125 vezes
@@ -405,7 +509,7 @@ class ShowTrade extends Component
         if ($this->typeCoin == 'USDT') {
             $maxRequiredAmount = floatval(str_replace(',', '.', $this->amount));
         } else {
-            $maxRequiredAmount = floatval(str_replace(',', '.', $this->amount)) * $this->price;
+            $maxRequiredAmount = floatval(str_replace(',', '.', $this->amount)) * $price;
         }
 
         $this->totalOperation = $maxRequiredAmount * (1 + $this->cost); //OPERAÇÃO MAIS OS CUSTOS
@@ -420,25 +524,34 @@ class ShowTrade extends Component
             return ["error" => "Saldo insuficiente para a margem de operação."];
         }
         
-        $total = $this->calculateTotalValue($this->price, $this->amount);
-        if ($total < 2)  {
-            $this->addError("orderError", "O valor total do pedido deve ser de no mínimo 2 USDT.");
-            return ["error" => "O valor total do pedido deve ser de no mínimo 2 USDT."];
-        }
+        // APLICANDO TAXA
+        $totalReal = $this->calculateTotalValue($price, $this->amount);
+        // if ($total < 2)  {
+        //     $this->addError("orderError", "O valor total do pedido deve ser de no mínimo 2 USDT.");
+        //     return ["error" => "O valor total do pedido deve ser de no mínimo 2 USDT."];
+        // }
+        $taxa = $config->operating_fee; // 50%
+        // $applyTax = ($wallet->amountusdt * $taxa) / 100;
+        $applyTax = ($totalReal * $taxa) / 100;
+        $total = $totalReal - $applyTax;
+        // APLICANDO TAXA
+
+        $priceo = floatval(str_replace(',', '.', $price))?? null;
         $order = Order::create([
 
             'person_id'     => $this->person->id ?? null,
-            'price_open'         => floatval(str_replace(',', '.', $this->price))?? null,
+            'price_open'    => $price,
             'amount'        => floatval(str_replace(',', '.', $this->amount))?? null,
             'total'         => $total,
             'status'        => 'open',
             'take_proft'    => floatval($this->takeProft) ?? null,
             'stop_loss'     => floatval($this->stopLoss) ?? null,
             'direction'     => 'sell',
-            'type'          => 'future'
+            'type'          => 'future',
+            'liquidation'   => ($price * $liquidationPercent) + $price
         ]);
 
-        $updateAmount = $maxRequiredAmount / $margem + $cost;
+        $updateAmount = $maxRequiredAmount / $margemTrue + $cost;
 
         // $wallet->update([
         //     // 'amountusdt' => $wallet->amountusdt - $updateAmount
@@ -446,17 +559,17 @@ class ShowTrade extends Component
         //     'amountusdt' => number_format($wallet->amountusdt - floor($this->totalOperation), 2, '.', ''),
         //     'amountmargem' => number_format($wallet->amountmargem - floor($total), 2, '.', '')
         // ]);
-        $valorMargem = $wallet->amountusdt * $margem;
+        $valorMargem = $wallet->amountusdt * $margemTrue;
         if ($wallet->amountmargem > 0) {
-            $calc = (float) number_format($wallet->amountmargem - $total, 2, '.', '');
+            $calc = (float) number_format($wallet->amountmargem - $totalReal, 2, '.', '');
         }else {
 
-            $calc = (float) number_format($valorMargem - ($wallet->amountmargem + $total), 2, '.', '');
+            $calc = (float) number_format($valorMargem - ($wallet->amountmargem + $totalReal), 2, '.', '');
         }
         $wallet->update([
             // 'amountusdt' => $wallet->amountusdt - $updateAmount
             // 'amountusdt' => number_format($wallet->amountusdt - floor($this->totalOperation), 2, '.', ''),
-            'amountusdt' => number_format($wallet->amountusdt - $total, 2, '.', ''),
+            'amountusdt' => number_format($wallet->amountusdt - $totalReal, 2, '.', ''),
             // 'amountmargem' => number_format($wallet->amountmargem + floor($total), 2, '.', ''),
             // 'amountmargem' => number_format($valorMargem - ($wallet->amountmargem + floor($total)), 2, '.', ''),
             'amountmargem' => $calc,
@@ -474,20 +587,23 @@ class ShowTrade extends Component
 
     public function orderScoreSellUsdt()
     {
-        $margem = Config::first()->margem / 100;
+        $config = Config::first();
+        $liquidationPercent = $config->liquidationpercent / 100;
+        $margemTrue = $config->margem / 100;
+        $margem = 100 / 100;
         // Busca a carteira do usuário
         $wallet = Wallet::where('person_id', $this->person->id)->first();
 
         
 
-        if($this->takeProft > 0 && $this->takeProft < $this->price * 1.01)
+        if($this->takeProft > 0 && $this->takeProft > $this->price)
         {
-            $this->addError("orderError", "Ganho no take proft inferior a 1%.");
+            $this->addError("orderError", "Ganho no take proft superior valor atual");
 
             return ["error" => "Preço inválido."];
         }
 
-        if($this->stopLoss > $this->price)
+        if($this->stopLoss > 0 && $this->stopLoss < $this->price)
         {
             $this->addError("orderError", "Perda no stop loss inválido.");
 
@@ -502,6 +618,21 @@ class ShowTrade extends Component
             return ["error" => "Quantidade inválida."];
         }
 
+        $binanceController = new BinanceController();
+        $priceResponse = $binanceController->lastPricing();
+
+        // Se a resposta for um objeto de resposta JSON do Laravel
+        if ($priceResponse instanceof \Illuminate\Http\JsonResponse) {
+            // Decodifica o JSON para um array PHP
+            $data = $priceResponse->getData(true);
+            $price = $data['askPrice'];
+
+        } else {
+            // Se a resposta for um array ou outro tipo
+            $price = $priceResponse['askPrice'];
+
+        }
+
         // Calcula o valor mínimo necessário no saldo considerando a margem de 125 vezes
         $maxRequiredBalance = $wallet->amountusdt * $margem;
         // Calcula o valor mínimo necessário no saldo considerando a margem de 125 vezes
@@ -509,7 +640,7 @@ class ShowTrade extends Component
         if ($this->typeCoin == 'USDT') {
             $maxRequiredAmount = floatval(str_replace(',', '.', $this->amount));
         } else {
-            $maxRequiredAmount = floatval(str_replace(',', '.', $this->amount)) * $this->price;
+            $maxRequiredAmount = floatval(str_replace(',', '.', $this->amount)) * $price;
         }
 
         $this->totalOperation = $maxRequiredAmount * (1 + $this->cost); //OPERAÇÃO MAIS OS CUSTOS
@@ -525,26 +656,34 @@ class ShowTrade extends Component
         }
         
         // $total = $this->calculateTotalValue($this->price, $this->amount);
-        $total = floatval($this->amount);
-        if ($total < 2)  {
-            $this->addError("orderError", "O valor total do pedido deve ser de no mínimo 2 USDT.");
-            return ["error" => "O valor total do pedido deve ser de no mínimo 2 USDT."];
-        }
+        $totalReal = floatval($this->amount);
+        // if ($total < 2)  {
+        //     $this->addError("orderError", "O valor total do pedido deve ser de no mínimo 2 USDT.");
+        //     return ["error" => "O valor total do pedido deve ser de no mínimo 2 USDT."];
+        // }
+        $taxa = $config->operating_fee; // 50%
+        // $applyTax = ($wallet->amountusdt * $taxa) / 100;
+        $applyTax = ($totalReal * $taxa) / 100;
+        $total = $totalReal - $applyTax;
+        // APLICANDO TAXA
+
+        $priceo = floatval(str_replace(',', '.', $price))?? null;
         $order = Order::create([
 
             'person_id'     => $this->person->id ?? null,
-            'price_open'         => floatval(str_replace(',', '.', $this->price))?? null,
+            'price_open'    => $priceo,
             // 'amount'        => floatval(str_replace(',', '.', $this->amount))?? null,
-            'amount'        => floatval(str_replace(',', '.', ($this->amount / $this->price)))?? null,
+            'amount'        => floatval(str_replace(',', '.', ($this->amount / $price)))?? null,
             'total'         => $total,
             'status'        => 'open',
             'take_proft'    => floatval($this->takeProft) ?? null,
             'stop_loss'     => floatval($this->stopLoss) ?? null,
             'direction'     => 'sell',
-            'type'          => 'future'
+            'type'          => 'future',
+            'liquidation'   => ($priceo * $liquidationPercent) + $priceo
         ]);
 
-        $updateAmount = $maxRequiredAmount / $margem + $cost;
+        $updateAmount = $maxRequiredAmount / $margemTrue + $cost;
 
         // $wallet->update([
         //     // 'amountusdt' => $wallet->amountusdt - $updateAmount
@@ -552,17 +691,17 @@ class ShowTrade extends Component
         //     'amountusdt' => number_format($wallet->amountusdt - floor($this->totalOperation), 2, '.', ''),
         //     'amountmargem' => number_format($wallet->amountmargem - floor($total), 2, '.', '')
         // ]);
-        $valorMargem = $wallet->amountusdt * $margem;
+        $valorMargem = $wallet->amountusdt * $margemTrue;
         if ($wallet->amountmargem > 0) {
-            $calc = (float) number_format($wallet->amountmargem - $total, 2, '.', '');
+            $calc = (float) number_format($wallet->amountmargem - $totalReal, 2, '.', '');
         }else {
 
-            $calc = (float) number_format($valorMargem - ($wallet->amountmargem + $total), 2, '.', '');
+            $calc = (float) number_format($valorMargem - ($wallet->amountmargem + $totalReal), 2, '.', '');
         }
         $wallet->update([
             // 'amountusdt' => $wallet->amountusdt - $updateAmount
             // 'amountusdt' => number_format($wallet->amountusdt - floor($this->totalOperation), 2, '.', ''),
-            'amountusdt' => number_format($wallet->amountusdt - $total, 2, '.', ''),
+            'amountusdt' => number_format($wallet->amountusdt - $totalReal, 2, '.', ''),
             // 'amountmargem' => number_format($wallet->amountmargem + floor($total), 2, '.', ''),
             // 'amountmargem' => number_format($valorMargem - ($wallet->amountmargem + floor($total)), 2, '.', ''),
             'amountmargem' => $calc,
@@ -582,6 +721,7 @@ class ShowTrade extends Component
     {
         info("Price updated to: {$newPrice}");
         $this->price = $newPrice;
+        $this->porcetagem = Config::first()->porcetagem;
         $this->render();
 
     } 
@@ -643,8 +783,26 @@ class ShowTrade extends Component
 
     public function orderClose($orderId)
     {
+        $config = Config::first();
+
+        $this->bloquearBotoes();
+        $this->emit('bloquearBotoes');
+        
+        Logs::create([
+            'logs' => $orderId,
+            'models' => 'trade',
+            'user_id' => auth()->user()->id,
+        ]);
+
+
         $order = Order::find($orderId);
-        $margem = Config::first()->margem / 100;
+        if ($order->status == 'closed') {
+            return;
+        }
+
+
+
+        $margem = $config->margem / 100;
     
         $binanceController = new BinanceController();
 
@@ -660,16 +818,32 @@ class ShowTrade extends Component
             $askPrice = $priceResponse['askPrice'];
         }
 
+        $priceOpen = (float) $order->price_open;
+        $amount = (float) $order->amount;
+        $margem = (float) $this->margem;
+
         if($order->direction === 'buy')
         {
-            $gainLoss = (floatval($askPrice) - floatval($order->price_open)) * $order->amount;
+            $gainLoss = ($askPrice - $priceOpen) * $amount;
 //            $gainLossRounded = floor($gainLoss * 100) / 100;
-            $gainLoss = number_format($gainLoss, 2, '.');
-            $gainLossValue = number_format($gainLoss*$this->margem, 2, '.', '');
+            //$gainLoss = number_format($gainLoss, 2, '.');
+            $gainLossValueT = number_format($gainLoss*$margem, 2, '.', '');
         }else{
-            $gainLoss = (floatval($order->price_open) - floatval($askPrice)) * $order->amount;
-            $gainLoss = number_format($gainLoss, 2, '.');
-            $gainLossValue = number_format($gainLoss*$this->margem, 2, '.', '');
+            $gainLoss = ($priceOpen - $askPrice) * $amount;
+            //$gainLoss = number_format($gainLoss, 2, '.');
+            $gainLossValueT = number_format($gainLoss*$margem, 2, '.', '');
+        }
+
+        if ($gainLossValueT < 0) {
+            //preju
+            $taxa = $config->operating_fee;
+            $gainLossValue = (($gainLossValueT * $taxa) / 100) + $gainLossValueT;
+            //endpreju
+        } else {
+            //lucro
+            $taxa = $config->profit_rate;
+            $gainLossValue = (($gainLossValueT * $taxa) / 100) + $gainLossValueT;
+            //endlucro
         }
 
         // Atualizar a ordem
@@ -684,7 +858,7 @@ class ShowTrade extends Component
         $user = $this->user;
         $calcAfLevel1 = 0.15;
         $calcAfLevel2 = 0.05;
-        if ($user->aflevel1) {
+        if ($user->aflevel1 && $gainLossValue > 0) {
             $userAf1 = User::where('code', $user->aflevel1)->first();
             if ($userAf1) {
                 $currentAmountAf1 = $userAf1->person->wallet->amountcpa;
@@ -742,6 +916,9 @@ class ShowTrade extends Component
             if (floatval($gainLoss) < 0) {
                 // dd(($wallet->amountusdt ."+". $formattedTotal) ."+". floatval($gainLoss));
                 $margemGain = floatval($gainLoss) * 0.10;
+                //preju
+                //$gainLossValue = (($gainLossValue * 0.50) / 100) + $gainLossValue;
+                //endpreju
                 $wallet->update([
                     'amountusdt' => ($wallet->amountusdt + $formattedTotal) + floatval($gainLossValue),
                     // 'amountmargem' => $wallet->amountmargem - floatval($order->total),
@@ -749,6 +926,7 @@ class ShowTrade extends Component
                 ]);
             } else {
                 $margemGain = floatval($gainLoss) * 0.10;
+                //$gainLossValue = (($gainLossValue * 2) / 100) + $gainLossValue;
                 $wallet->update([
                     'amountusdt' => ($wallet->amountusdt + $formattedTotal) + floatval($gainLossValue),
                     // 'amountmargem' => $wallet->amountmargem - floatval($order->total),
@@ -761,6 +939,10 @@ class ShowTrade extends Component
 
                 //dd($wallet->amountmargem + floatval($formattedTotal))
                 $margemGain = floatval($gainLoss) * 0.10;
+                //CALCULO PREJU
+                //$gainLossValue = (($gainLossValue * 0.50) / 100) + $gainLossValue;
+                //END CALCULO PREJU
+
                 $wallet->update([
                     'amountusdt' => ($wallet->amountusdt + $formattedTotal) + floatval($gainLossValue),
                     // 'amountmargem' => $wallet->amountmargem - floatval($order->total),
@@ -769,6 +951,9 @@ class ShowTrade extends Component
             } else {
                 //dd($wallet->amountmargem + floatval($formattedTotal));
                 $margemGain = floatval($gainLoss) * 0.10;
+                //CALCULO LUCRO
+                //$gainLossValue = (($gainLossValue * 2) / 100) + $gainLossValue;
+                //END CALCULO
                 $wallet->update([
                     'amountusdt' => ($wallet->amountusdt + $formattedTotal) + floatval($gainLossValue),
                     // 'amountmargem' => $wallet->amountmargem - floatval($order->total),
@@ -776,14 +961,16 @@ class ShowTrade extends Component
                 ]);
             }
         }
-        
-    
+        $this->botaoBloqueado = false;
         $this->reload();
     }
     
 
 
-    
+    public function bloquearBotoes()
+    {
+        $this->botaoBloqueado = true;
+    }
 
 
     

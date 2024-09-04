@@ -4,10 +4,10 @@
 <div id="cryptoon-layout" class="theme-orange">
         
     <!-- sidebar -->
-    <div class="sidebar py-2 py-md-2 me-0 border-end">
+    <div class="sidebar py-2 py-md-2 me-0 border-end" wire:ignore>
         <div class="d-flex flex-column h-100">
             <!-- Logo -->
-            <a href="/welcome" wire:ignore class="mb-0 brand-icon">
+            <a href="/welcome" class="mb-0 brand-icon">
                 <img src="{{$this->config->logomarca}}" width="150px" />
             </a>
             <!-- Menu: main ul -->
@@ -176,7 +176,7 @@
                                     <div class="col-lg-10">
                                         <ul class="menu-grid list-unstyled row row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 g-4 mb-0 mt-lg-3">
                                             <li class="col">
-                                                <a href="faleconosco.pdf" target="_blank" class="d-flex color-700">
+                                                <a href="#" class="d-flex color-700">
                                                 <div class="avatar">
                                                         <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 38 38">
                                                             <circle xmlns="http://www.w3.org/2000/svg"   cx="19" cy="19" r="11" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></circle>
@@ -192,7 +192,7 @@
                                                 </a>
                                             </li>
                                             <li class="col">
-                                                <a href="faleconosco.pdf" target="_blank" class="d-flex color-700">
+                                                <a href="#" class="d-flex color-700">
                                                 <div class="avatar">
                                                         <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 38 38">
                                                             <circle xmlns="http://www.w3.org/2000/svg"   cx="19" cy="19" r="11" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></circle>
@@ -201,7 +201,8 @@
                                                     </div>
                                                     <div class="flex-fill text-truncate">
                                                         <p class="h6 mb-0">Fale Conosco!</p>
-                                                        <small class="text-muted">support@exgate.io</small>
+                                                        <small class="text-muted">support@exgate.io</small><br/>
+                                                        <small class="text-muted"><img src="whats.png" width="15px" /> +40 766 757-571</small>
                                                     </div>
                                                 </a>
                                             </li>

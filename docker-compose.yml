@@ -2,7 +2,7 @@ version: '3'
 
 services:
     laravelapp:
-        container_name: botapi
+        container_name: exapi
         build: .
         ports:
             - "8080:80"
@@ -19,7 +19,7 @@ services:
             - postgres
             
     postgres:
-        container_name: botdb
+        container_name: exdb
         image: 'postgres'
         ports:
             - "5432:5432"

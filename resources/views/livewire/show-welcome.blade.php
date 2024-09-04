@@ -3,10 +3,10 @@
 <div id="cryptoon-layout" class="theme-orange">
         
     <!-- sidebar -->
-    <div class="sidebar py-2 py-md-2 me-0 border-end">
+    <div class="sidebar py-2 py-md-2 me-0 border-end" wire:ignore>
         <div class="d-flex flex-column h-100">
             <!-- Logo -->
-            <a href="/welcome" wire:ignore class="mb-0 brand-icon">
+            <a href="/welcome" class="mb-0 brand-icon">
                 <img src="{{$this->config->logomarca}}" width="150px" />
             </a>
             <!-- Menu: main ul -->
@@ -179,7 +179,7 @@
                                     <div class="col-lg-10">
                                         <ul class="menu-grid list-unstyled row row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 g-4 mb-0 mt-lg-3">
                                             <li class="col">
-                                                <a href="faleconosco.pdf" target="_blank" class="d-flex color-700">
+                                                <a href="#" class="d-flex color-700">
                                                 <div class="avatar">
                                                         <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 38 38">
                                                             <circle xmlns="http://www.w3.org/2000/svg"   cx="19" cy="19" r="11" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></circle>
@@ -195,7 +195,7 @@
                                                 </a>
                                             </li>
                                             <li class="col">
-                                                <a href="faleconosco.pdf" target="_blank" class="d-flex color-700">
+                                                <a href="#" class="d-flex color-700">
                                                 <div class="avatar">
                                                         <svg xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" width="24px" height="24px" viewBox="0 0 38 38">
                                                             <circle xmlns="http://www.w3.org/2000/svg"   cx="19" cy="19" r="11" style="fill:var(--primary-color);" data-st="fill:var(--chart-color4);"></circle>
@@ -204,7 +204,8 @@
                                                     </div>
                                                     <div class="flex-fill text-truncate">
                                                         <p class="h6 mb-0">Fale Conosco!</p>
-                                                        <small class="text-muted">support@exgate.io</small>
+                                                        <small class="text-muted">support@exgate.io</small><br/>
+                                                        <small class="text-muted"><img src="whats.png" width="15px" /> +40 766 757-571</small>
                                                     </div>
                                                 </a>
                                             </li>
@@ -289,7 +290,7 @@
                             <div class="card-body d-flex align-items-center">
                                 <div class="flex-fill text-truncate">
                                     <span class="text-muted small text-uppercase">
-                                        <a href="https://app.exgate.io/exchange">BTC/USDT</a> <img src="bit.jpeg" width="20" />
+                                        <a href="https://app.exgate.io/exchange">BTC/USDT</a> <img src="bit.png" width="20" />
                                     </span>
                                     <div class="d-flex flex-column">
                                         <div class="price-block">
@@ -311,7 +312,7 @@
                             <div class="card-body d-flex align-items-center">
                                 <div class="flex-fill text-truncate">
                                     <span class="text-muted small text-uppercase">
-                                        <a href="https://app.exgate.io/trocas">USDT/BRL</a> <img src="usdt.jpeg" width="20" />
+                                        <a href="https://app.exgate.io/trocas">USDT/BRL</a> <img src="usdt.png" width="20" />
                                     </span>
                                     <div class="d-flex flex-column">
                                         <div class="price-block">
@@ -381,14 +382,14 @@
                                         <div class="row g-3">
                                             <div class="col-lg-6">
                                                 <div>Saldo da conta:</div>
-                                                <h3>{{number_format($this->wallet->amount, 10, '.', '')}} BTC <img src="bit.jpeg" style="margin-bottom:3px;" width="20" /></h3>
+                                                <h3>{{number_format($this->wallet->amount, 10, '.', '')}} BTC <img src="bit.png" style="margin-bottom:3px;" width="20" /></h3>
                                                 <div class="mt-3 text-uppercase text-muted small">Saldo em USDT </div>
-                                                <h5>$ {{number_format($this->wallet->amountusdt, 2, '.')}} <img src="usdt.jpeg" width="20" /></h5>
+                                                <h5>$ {{number_format($this->wallet->amountusdt, 2, '.')}} <img src="usdt.png" width="20" /></h5>
                                                 <div class="mt-3 text-uppercase text-muted small">Saldo em BRL </div>
                                                 <h5>R$ {{number_format($this->wallet->amountbrl, 2, '.')}}</h5>
                                                 <!--<span class="small text-muted" style="margin-top: -10px; display: block;">R$ {{number_format($this->wallet->amountusdt * $this->priceBrl, 2, ',', '.')}}</span> -->
                                                 <div class="mt-3 text-uppercase text-muted small">Total</div>
-                                                    <h5>$ {{number_format(($this->wallet->amount * $price) + ($this->wallet->amountbrl / $price) + $this->wallet->amountusdt, 2, '.')}} USDT <img src="usdt.jpeg" width="20" /></h5>
+                                                    <h5>$ {{number_format(($this->wallet->amount * $price) + ($this->wallet->amountbrl / $price) + $this->wallet->amountusdt, 2, '.')}} USDT <img src="usdt.png" width="20" /></h5>
                                                     <span class="small text-muted" style="margin-top: -10px; display: block;">R$ {{number_format(($this->wallet->amountusdt + ($this->wallet->amount * $price)) * $this->priceBrl, 2, ',', '.')}}</span>
 
                                                     <input data-amount="{{number_format($this->wallet->amount, 10, '.', '')}}" type='hidden'/>
